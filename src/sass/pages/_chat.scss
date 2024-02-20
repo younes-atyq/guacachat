@@ -1,0 +1,202 @@
+@use "../abstracts" as *;
+
+#chat {
+  @include page-content(null, $green-cyan, 893px);
+  display: grid;
+  grid-template-columns: 1fr 251px;
+  grid-template-rows: 1fr 215px;
+  justify-content: end;
+  gap: 10px;
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr 190px;
+  }
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr 1px;
+    grid-template-rows: 1fr auto;
+  }
+  #nav {
+    --active: #00db96;
+    --inactive: #b6dcb7;
+    position: absolute;
+    transform: translateY(calc(-100%));
+    @media (max-width: 567px) {
+      right: 50%;
+      transform: translate(50%, calc(-100%));
+    }
+  }
+  #messages,
+  #room,
+  #input-field {
+    background-color: $silver-chalice;
+    // justify-content: center;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+  }
+  #input-field {
+    align-items: center;
+    gap: 20px;
+    display: flex;
+    grid-area: 2/1/2/2;
+    @include mq("sm") {
+      flex-direction: column;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-inline: auto;
+      gap: 10px;
+    }
+    .editor-wrapper {
+      flex: 1;
+      @include mq("sm") {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .toolbar {
+        background-color: transparent;
+        border: none;
+        @include mq("sm") {
+          display: flex;
+          justify-content: center;
+        }
+      }
+      .editor {
+        background-color: white;
+        border: 1px solid black;
+        padding: 0 15px;
+        width: 100%;
+        max-width: 700px;
+        @include mq("xl") {
+          max-width: 500px;
+        }
+        @include mq("l") {
+          max-width: 350px;
+        }
+        @include mq("sm") {
+          max-width: 300px;
+          padding: 5px;
+          height: 55px;
+          * {
+            margin: 0;
+            padding: 0;
+          }
+        }
+      }
+      .rdw-option-wrapper.rdw-option-disabled {
+      }
+      .rdw-option-wrapper.rdw-option-disabled:nth-last-of-type(1),
+      .rdw-option-wrapper.rdw-option-disabled:nth-last-of-type(2) {
+        display: none;
+      }
+      img {
+        width: 12px;
+      }
+    }
+    #send {
+      padding: 0;
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+      filter: contrast(0.7);
+
+      @include on-event {
+        filter: contrast(1);
+      }
+    }
+    #info-msg {
+      position: absolute;
+      display: block;
+      margin-left: 20px;
+      animation: disappear 2s forwards;
+    }
+  }
+  #messages {
+    overflow: auto;
+    grid-area: 1 / 1 / 2 / 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 30px;
+    .message {
+      display: flex;
+      align-items: center;
+      .name {
+        margin-right: 15px;
+        font-family: $secondary-font-stack;
+        position: relative;
+        text-wrap: nowrap;
+        @media (max-width: 567px) {
+          font-size: 20px;
+        }
+        &::before {
+          content: ":";
+          position: absolute;
+          right: -10px;
+        }
+        .time {
+          font-size: 18px;
+          position: absolute;
+          bottom: -15px;
+          left: 0;
+          @media (max-width: 567px) {
+            font-size: 18px;
+          }
+        }
+      }
+      .text-msg {
+        color: $deep-purple;
+        line-height: 1.2;
+        @media (max-width: 567px) {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+  #room {
+    grid-area: 1 / 2 / 3 / 3;
+    @media (max-width: 767px) {
+      z-index: 2;
+      position: absolute;
+      display: none;
+      width: 250px;
+      right: 0;
+      height: 100%;
+      border-left: 15px solid $green-cyan;
+    }
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    #room-name {
+      font-family: $secondary-font-stack;
+      text-decoration: underline;
+      font-size: 25px;
+      margin: 0;
+      padding: 0;
+      align-self: center;
+    }
+    #room-info {
+      font-family: $secondary-font-stack;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    #users {
+      margin-left: 20px;
+      list-style: square;
+      font-size: 18px;
+    }
+  }
+}
+
+@keyframes disappear {
+  0%,
+  99% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,9 @@
+@use "../abstracts" as *;
+
+#about {
+  @include page-content("../../assets/about.png", $light-green, 893px);
+  #nav {
+    --active: #b6dcb7;
+    --inactive: #ccdfcc;
+  }
+}

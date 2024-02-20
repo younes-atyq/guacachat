@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+// 1. Configuration and helpers
+// @use "abs"
+
+// 2. Vendors
+@use "vendors/normalize";
+
+// 3. Base stuff
+@use "./base";
+
+// 4. Layout-related sections
+@use "./layout";
+
+// 5. Page-specific styles
+@use "./pages";
