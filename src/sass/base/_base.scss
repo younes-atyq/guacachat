@@ -32,6 +32,12 @@ html {
 //   margin-right: 5px;
 // }
 
+input:-internal-autofill-selected::placeholder {
+  color: inherit !important;
+  opacity: 1 !important;
+  background-color: transparent !important;
+}
+
 a {
   // color: $white;
   text-decoration: none;
