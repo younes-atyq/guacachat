@@ -27,9 +27,12 @@ const Chat = () => {
   const [convertedContent, setConvertedContent] = useState("s");
   const chat = useRef();
   // scroll the chat to the bottom
+  const scrollToBottom = () => {
+    chat.current?.scrollTo(0, chat.current?.scrollHeight);
+  };
   useEffect(() => {
     // console.log(chat.current);
-    chat.current?.scrollTo(0, chat.current?.scrollHeight);
+    scrollToBottom();
     const html = convertToHTML(editorState.getCurrentContent());
     setConvertedContent(html);
   }, [editorState]);
@@ -39,7 +42,7 @@ const Chat = () => {
   };
 
   const handleClick = () => {
-    if (!chat) return;
+    if (!chat?.current) return;
 
     const message = document.createElement("div");
     message.className = "message";
@@ -54,17 +57,31 @@ const Chat = () => {
 
     textMsg.innerHTML = convertedContent;
     textMsg.className = "text-msg";
+
     const name = document.createElement("h3");
     name.className = "name";
-
     // I'll use the data base to get the name in the future
     name.innerHTML = "John Doe <span class='time'>10:00</span>";
 
-    message.appendChild(name);
-    message.appendChild(textMsg);
+    message.append(name);
+    message.append(textMsg);
 
     chat.current.appendChild(message);
+
+    scrollToBottom();
+    // reset the editor
+    setEditorState(EditorState.createEmpty());
   };
+
+  // "ctrl + enter" method has an issue
+  // useEffect(() => {
+  //   document.addEventListener("keydown", (e) => {
+  //     if (e.ctrlKey && e.key === "Enter") {
+  //       e.preventDefault();
+  //       handleClick();
+  //     }
+  //   });
+  // }, []);
 
   return (
     <div id="chat" className="container">

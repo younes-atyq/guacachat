@@ -65,6 +65,8 @@
       .editor {
         background-color: white;
         border: 1px solid black;
+        overflow: auto;
+        max-height: 110px;
         padding: 0 15px;
         width: 100%;
         max-width: 700px;
@@ -83,8 +85,6 @@
             padding: 0;
           }
         }
-      }
-      .rdw-option-wrapper.rdw-option-disabled {
       }
       .rdw-option-wrapper.rdw-option-disabled:nth-last-of-type(1),
       .rdw-option-wrapper.rdw-option-disabled:nth-last-of-type(2) {
@@ -120,9 +120,12 @@
     justify-content: start;
     align-items: start;
     gap: 30px;
+    @include mq("sm") {
+      align-items: center;
+    }
     .message {
       display: flex;
-      align-items: center;
+      align-items: start;
       .name {
         margin-right: 15px;
         font-family: $secondary-font-stack;
@@ -147,10 +150,38 @@
         }
       }
       .text-msg {
+        // need to fix the width
         color: $deep-purple;
         line-height: 1.2;
-        @media (max-width: 567px) {
+        width: 100%;
+        max-width: 700px;
+        @include mq("xl") {
+          max-width: 500px;
+        }
+        @include mq("l") {
+          max-width: 350px;
+        }
+        @include mq("sm") {
+          max-width: 300px;
           font-size: 16px;
+        }
+        p {
+          color: $deep-purple;
+          line-height: 1.2;
+          width: 100%;
+          max-width: 700px;
+          text-wrap: wrap;
+          word-wrap: break-word;
+          @include mq("xl") {
+            max-width: 500px;
+          }
+          @include mq("l") {
+            max-width: 350px;
+          }
+          @include mq("sm") {
+            max-width: 300px;
+            font-size: 16px;
+          }
         }
       }
     }

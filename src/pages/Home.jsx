@@ -1,4 +1,5 @@
 import Nav from "../components/Nav";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -13,7 +14,7 @@ function Home() {
           ideas without boundaries.
         </p>
       </div>
-      <a href="#a">StepIn</a>
+      <Link to={"/sign-up"}>Sign Up</Link>
     </div>
   );
 }
