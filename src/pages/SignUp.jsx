@@ -1,68 +1,52 @@
-import { Link } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Popup from "../components/Popup";
 import SingUpPopupError from "../components/SingUpPopupError";
+import { auth } from "../firebase.js";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  onAuthStateChanged,
+} from "firebase/auth";
 
-function SignUp() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const signUpForm = useRef();
-  useEffect(() => {
-    signUpForm.current.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const isValid = SingUpPopupError({ username, email, pwd, confirm });
-      console.log(isValid);
+function SignUp({ history }) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const email = e.target.email.value;
+    const pwd = e.target.password.value;
+    const confirm = e.target.confirm.value;
+
+    const isValid = SingUpPopupError({ username, email, pwd, confirm });
+    if (!isValid) return;
+    createUserWithEmailAndPassword(auth, email, pwd).then((userCredential) => {
+      const user = userCredential.user;
+      console.log("User signed up:", user);
+      // add username to the firestorage
+      updateProfile(auth.currentUser, { displayName: username }).then(() => {
+        console.log("The user has a name now!");
+      });
     });
-  }, [confirm, email, pwd, username]);
-
-  // btn.addEventListener("click", () => {});
+  };
 
   return (
     <div id="sign-up" className="container">
       <Popup />
       <h2 className="title">Sign Up</h2>
-      <form ref={signUpForm} action="#">
+      <form onSubmit={handleSubmit} action="#">
         <label htmlFor="username">
           <span>Username:</span>
-          <input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            type="text"
-            name="username"
-            id="username"
-          />
+          <input type="text" name="username" id="username" />
         </label>
         <label htmlFor="email">
-          <span>Email:</span>{" "}
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            name="email"
-            id="email"
-          />
+          <span>Email:</span> <input type="text" name="email" id="email" />
         </label>
         <label htmlFor="password">
           <span>Password:</span>
-          <input
-            value={pwd}
-            onChange={(e) => setPwd(e.target.value)}
-            type="password"
-            name="password"
-            id="password"
-          />
+          <input type="password" name="password" id="password" />
         </label>
         <label htmlFor="confirm">
           <span>Confirm Pwd:</span>
-          <input
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            type="password"
-            name="confirm"
-            id="confirm"
-          />
+          <input type="password" name="confirm" id="confirm" />
         </label>
         <input type="submit" value="Sign Up" />
       </form>
