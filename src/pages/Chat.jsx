@@ -3,9 +3,8 @@ import Nav from "../components/Nav";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { convertToHTML } from "draft-convert";
-import DOMPurify from "dompurify";
-
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
 const sendIcon = (
   <svg
     width="80"
@@ -24,36 +23,25 @@ const sendIcon = (
 
 const Chat = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [convertedContent, setConvertedContent] = useState("s");
+  const [convertedContent, setConvertedContent] = useState("");
   const chat = useRef();
   // scroll the chat to the bottom
   const scrollToBottom = () => {
     chat.current?.scrollTo(0, chat.current?.scrollHeight);
   };
   useEffect(() => {
-    // console.log(chat.current);
     scrollToBottom();
-    const html = convertToHTML(editorState.getCurrentContent());
-    setConvertedContent(html);
-  }, [editorState]);
-
-  const createMarkup = (html) => {
-    return { __html: DOMPurify.sanitize(html) };
-  };
+  }, []);
 
   const handleClick = () => {
     if (!chat?.current) return;
+    const html = convertToHTML(editorState.getCurrentContent());
+    setConvertedContent(html);
 
     const message = document.createElement("div");
     message.className = "message";
 
     const textMsg = document.createElement("p");
-
-    // I'll check if my current code is securely safe or not
-    // const innerMessage = document.createTextNode(
-    //   createMarkup(convertedContent.__html)
-    // );
-    // textMsg.append(innerMessage);
 
     textMsg.innerHTML = convertedContent;
     textMsg.className = "text-msg";
@@ -152,7 +140,6 @@ const Chat = () => {
             {sendIcon}
           </button>
         </div>
-        {/* <div dangerouslySetInnerHTML={createMarkup(convertedContent)}></div> */}
       </div>
     </div>
   );
