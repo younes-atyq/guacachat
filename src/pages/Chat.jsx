@@ -4,6 +4,7 @@ import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { convertToHTML } from "draft-convert";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import useAuthRedirect from "../hooks/useAuthRedirect";
 
 const sendIcon = (
   <svg
@@ -22,6 +23,7 @@ const sendIcon = (
 );
 
 const Chat = () => {
+  useAuthRedirect();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [convertedContent, setConvertedContent] = useState("");
   const chat = useRef();

@@ -1,15 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import Popup from "../components/Popup";
+import Popup, { setPopup } from "../components/Popup";
 import SingUpPopupError from "../components/SingUpPopupError";
-import { auth } from "../firebase.js";
-import {
-  createUserWithEmailAndPassword,
-  updateProfile,
-  onAuthStateChanged,
-} from "firebase/auth";
+import SingUpAuth from "../components/SingUpAuth";
 
-function SignUp({ history }) {
-  const handleSubmit = (e) => {
+function SignUp() {
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const username = e.target.username.value;
     const email = e.target.email.value;
@@ -18,14 +14,10 @@ function SignUp({ history }) {
 
     const isValid = SingUpPopupError({ username, email, pwd, confirm });
     if (!isValid) return;
-    createUserWithEmailAndPassword(auth, email, pwd).then((userCredential) => {
-      const user = userCredential.user;
-      console.log("User signed up:", user);
-      // add username to the firestorage
-      updateProfile(auth.currentUser, { displayName: username }).then(() => {
-        console.log("The user has a name now!");
-      });
-    });
+    const isValidAuth = await SingUpAuth({ username, email, pwd });
+    if (!isValidAuth) navigate("/rooms");
+    if (isValidAuth)
+      setPopup({ isPopup: true, heading: "Error", text: isValidAuth });
   };
 
   return (
