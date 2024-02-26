@@ -1,4 +1,4 @@
-import { setPopup } from "../components/Popup";
+import { setPopup } from "./Popup";
 
 const SignInPopupError = ({ email, pwd }) => {
   let isValid;

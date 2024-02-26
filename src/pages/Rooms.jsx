@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Nav from "../components/Nav";
+import useAuthRedirect from "../hooks/useAuthRedirect";
 const searchIcon = (
   <svg
     width="36"
@@ -17,6 +18,7 @@ const searchIcon = (
 );
 
 const Chat = () => {
+  useAuthRedirect();
   return (
     <div id="rooms" className="container">
       <Nav pageName="rooms" />
