@@ -8,7 +8,6 @@ const SingInAuth = async ({ email, pwd }) => {
     })
     .catch((error) => {
       let errorMessage = "";
-      console.log(error.code);
       if (error.code === "auth/invalid-credential") {
         errorMessage = "Invalid email or password.";
       } else {

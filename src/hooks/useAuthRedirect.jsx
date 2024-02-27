@@ -5,12 +5,15 @@ import { auth } from "../firebase.js";
 const useAuthRedirect = () => {
   const navigate = useNavigate();
 
-  onAuthStateChanged(auth, (user) => {
+  return onAuthStateChanged(auth, (user) => {
     console.log(user ? "user is signed in" : "user is signed out");
+    // When sign up the username not showing up
+    // temporary fix: redirect to home instead of rooms
     if (user) {
-      // navigate("/rooms");
+      return true;
     } else {
       navigate("/sign-in");
+      return false;
     }
   });
 };

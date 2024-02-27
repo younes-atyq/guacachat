@@ -1,14 +1,19 @@
-import { auth } from "../firebase.js";
+import { doc, setDoc } from "firebase/firestore/lite";
+import { auth, db } from "../firebase.js";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 const SingUpAuth = async ({ username, email, pwd }) => {
   return await createUserWithEmailAndPassword(auth, email, pwd)
     .then(() => {
-      return updateProfile(auth.currentUser, { displayName: username });
-    })
-    .then(() => {
-      console.log("User signed up:", auth.currentUser);
-      return false;
+      updateProfile(auth.currentUser, { displayName: username }).then(() => {
+        setDoc(doc(db, "users", auth.currentUser.uid), {
+          username: username,
+          email: email,
+          uid: auth.currentUser.uid,
+        }).then(() => {
+          return false;
+        });
+      });
     })
     .catch((error) => {
       let errorMessage = "";

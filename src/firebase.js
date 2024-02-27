@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
+import { collection, getFirestore, orderBy, query } from "firebase/firestore";
 
 // setup firebase
 const firebaseConfig = {
@@ -19,3 +20,10 @@ export const auth = getAuth();
 
 // Initialize Storage
 export const storage = getStorage();
+
+// Initialize firestore
+export const db = getFirestore();
+
+// // set collection
+// export const colRef = collection(db, "messages");
+export const q = query(collection(db, "messages"), orderBy("timestamp"));

@@ -1,7 +1,23 @@
+import { onAuthStateChanged } from "firebase/auth";
 import Nav from "../components/Nav";
 import { Link } from "react-router-dom";
+import { auth } from "../firebase";
+import { useState, useEffect } from "react";
 
 function Home() {
+  const [linkButton, setLinkButton] = useState();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLinkButton(<Link to="/chat">Step In</Link>);
+      } else {
+        setLinkButton(<Link to="/sign-in">Sign In</Link>);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div id="home" className="container">
       <Nav pageName="home" />
@@ -14,7 +30,7 @@ function Home() {
           ideas without boundaries.
         </p>
       </div>
-      <Link to={"/sign-up"}>Sign Up</Link>
+      {linkButton}
     </div>
   );
 }
