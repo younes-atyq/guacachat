@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import Nav from "../components/Nav";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { convertToHTML } from "draft-convert";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
+import SendMsgUI from "../components/SendMsgUI";
+import { signOut } from "firebase/auth";
+import { auth, q } from "../firebase";
+import { onSnapshot } from "firebase/firestore";
 
 const sendIcon = (
   <svg
@@ -25,99 +28,70 @@ const sendIcon = (
 const Chat = () => {
   useAuthRedirect();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [convertedContent, setConvertedContent] = useState("");
+  const [messages, setMessages] = useState([]);
   const chat = useRef();
   // scroll the chat to the bottom
-  const scrollToBottom = () => {
-    chat.current?.scrollTo(0, chat.current?.scrollHeight);
-  };
+
   useEffect(() => {
-    scrollToBottom();
-  }, []);
+    chat.current?.scrollTo(0, chat.current?.scrollHeight);
+  }, [messages]);
 
   const handleClick = () => {
-    if (!chat?.current) return;
-    const html = convertToHTML(editorState.getCurrentContent());
-    setConvertedContent(html);
-
-    const message = document.createElement("div");
-    message.className = "message";
-
-    const textMsg = document.createElement("p");
-
-    textMsg.innerHTML = convertedContent;
-    textMsg.className = "text-msg";
-
-    const name = document.createElement("h3");
-    name.className = "name";
-    // I'll use the data base to get the name in the future
-    name.innerHTML = "John Doe <span class='time'>10:00</span>";
-
-    message.append(name);
-    message.append(textMsg);
-
-    chat.current.appendChild(message);
-
-    scrollToBottom();
-    // reset the editor
-    setEditorState(EditorState.createEmpty());
+    if (!chat?.current || !editorState.getCurrentContent()) return;
+    SendMsgUI({
+      chat: chat.current,
+      editorState,
+      setEditorState,
+      EditorState,
+    });
   };
 
-  // "ctrl + enter" method has an issue
+  // get the messages from the database
+  useEffect(() => {
+    // scrollToBottom();
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      let messages = [];
+      snapshot.forEach((doc) => {
+        messages.push({ ...doc.data(), id: doc.id });
+      });
+      setMessages(messages);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // // "ctrl + enter" method has an issue
   // useEffect(() => {
+  //   let isMounted = true;
+  //   if (!isMounted) return;
   //   document.addEventListener("keydown", (e) => {
   //     if (e.ctrlKey && e.key === "Enter") {
   //       e.preventDefault();
   //       handleClick();
   //     }
   //   });
+  //   return (isMounted = false);
   // }, []);
 
   return (
     <div id="chat" className="container">
       <Nav pageName="rooms" />
       <div ref={chat} id="messages">
-        <div className="message">
-          <h3 className="name">
-            John Doe <span className="time">10:00</span>
-            <span className="read"></span>
-          </h3>
-          <p className="text-msg">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-            tincidunt, mauris vitae tincidunt tincidunt, mauris vitae tincidunt
-          </p>
-        </div>
-        <div className="message">
-          <h3 className="name">
-            John Doe <span className="time">10:00</span>
-            <span className="read"></span>
-          </h3>
-          <p className="text-msg">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-            tincidunt, mauris vitae tincidunt tincidunt, mauris vitae tincidunt
-          </p>
-        </div>
-        <div className="message">
-          <h3 className="name">
-            John Doe <span className="time">10:00</span>
-            <span className="read"></span>
-          </h3>
-          <p className="text-msg">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-            tincidunt, mauris vitae tincidunt tincidunt, mauris vitae tincidunt
-          </p>
-        </div>
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className="message"
+            dangerouslySetInnerHTML={{ __html: message.message }}
+          ></div>
+        ))}
       </div>
+
       <aside id="room">
-        <h2 id="room-name">First Chat Room</h2>
-        <p id="room-info">
-          Online users : <span id="online-users">2</span>
-        </p>
-        <ul id="users">
-          <li className="user">John Doe</li>
-          <li className="user">John Doe</li>
-        </ul>
+        <h2 id="room-name">The First Chat Room</h2>
+        <button id="logout" onClick={() => signOut(auth)}>
+          Logout
+        </button>
       </aside>
+
       <div id="input-field">
         <Editor
           editorState={editorState}

@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import Nav from "../components/Nav";
 import useAuthRedirect from "../hooks/useAuthRedirect";
+import { auth } from "../firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import { useState } from "react";
 const searchIcon = (
   <svg
     width="36"
@@ -19,6 +22,14 @@ const searchIcon = (
 
 const Chat = () => {
   useAuthRedirect();
+  const [username, setUsername] = useState("");
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUsername(user.displayName);
+    }
+  });
+
   return (
     <div id="rooms" className="container">
       <Nav pageName="rooms" />
@@ -35,15 +46,11 @@ const Chat = () => {
           </button>
         </form>
       </div>
-      <aside id="filter">
-        <h2>Filter</h2>
-        <p id="room-info">
-          Online users : <span id="online-users">2</span>
-        </p>
-        <ul id="users">
-          <li className="user">John Doe</li>
-          <li className="user">John Doe</li>
-        </ul>
+      <aside id="user-information">
+        <h2 id="username">{username}</h2>
+        <button id="logout" onClick={() => signOut(auth)}>
+          Logout
+        </button>
       </aside>
       <div id="results">
         <Link to={"/chat"} className="room">

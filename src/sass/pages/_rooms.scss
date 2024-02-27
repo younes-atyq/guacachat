@@ -24,7 +24,7 @@
     }
   }
   #search,
-  #filter,
+  #user-information,
   #results {
     background-color: $silver-chalice;
     width: 100%;
@@ -94,7 +94,7 @@
       }
     }
   }
-  #filter {
+  #user-information {
     padding: 10px;
     grid-area: 1 / 2 / 3 / 3;
     @media (max-width: 767px) {
@@ -109,24 +109,22 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
-    align-items: start;
-    & > h2 {
+    align-items: center;
+    #username {
       font-family: $secondary-font-stack;
       text-decoration: underline;
       font-size: 25px;
-      margin: 0;
+      letter-spacing: 1.5px;
+      margin-bottom: 30px;
       padding: 0;
-      align-self: center;
+      // align-self: center;
     }
-    #room-info {
+    #logout {
       font-family: $secondary-font-stack;
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-    #users {
-      margin-left: 20px;
-      list-style: square;
-      font-size: 18px;
+      font-size: 22px;
+      padding: 5px 10px;
+      background-color: $fuchsia-rose;
+      color: $white;
     }
   }
 }

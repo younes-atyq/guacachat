@@ -15,7 +15,7 @@ function SignUp() {
     const isValid = SingUpPopupError({ username, email, pwd, confirm });
     if (!isValid) return;
     const isValidAuth = await SingUpAuth({ username, email, pwd });
-    if (!isValidAuth) navigate("/rooms");
+    if (!isValidAuth) navigate("/home");
     if (isValidAuth)
       setPopup({ isPopup: true, heading: "Error", text: isValidAuth });
   };
