@@ -30,6 +30,7 @@ const Chat = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [messages, setMessages] = useState([]);
   const chat = useRef();
+  const sidebar = useRef();
   // scroll the chat to the bottom
 
   useEffect(() => {
@@ -84,8 +85,18 @@ const Chat = () => {
           ></div>
         ))}
       </div>
+      {/* display button to open the sidebar */}
+      <button
+        onClick={(e) => {
+          sidebar.current?.classList.toggle("active");
+          e.target?.classList.toggle("active");
+        }}
+        id="menu-btn"
+      >
+        &rarr;
+      </button>
 
-      <aside id="room">
+      <aside ref={sidebar} id="room">
         <h2 id="room-name">The First Chat Room</h2>
         <button id="logout" onClick={() => signOut(auth)}>
           Logout
