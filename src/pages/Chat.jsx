@@ -62,15 +62,13 @@ const Chat = () => {
 
   // // "ctrl + enter" method has an issue
   // useEffect(() => {
-  //   let isMounted = true;
-  //   if (!isMounted) return;
-  //   document.addEventListener("keydown", (e) => {
+  //   const unsubscribe = document.addEventListener("keydown", (e) => {
   //     if (e.ctrlKey && e.key === "Enter") {
   //       e.preventDefault();
-  //       handleClick();
+  //       document.querySelector("button").click();
   //     }
   //   });
-  //   return (isMounted = false);
+  //   return () => unsubscribe();
   // }, []);
 
   return (

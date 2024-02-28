@@ -14,7 +14,7 @@ const Nav = ({ pageName }) => {
           </Link>
         </li>
         <li>
-          <Link data-rooms className="link" to={"/chat"}>
+          <Link data-rooms className="link" to={"/rooms"}>
             Green Rooms
           </Link>
         </li>
