@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import Popup, { setPopup } from "../components/Popup";
-import SingUpPopupError from "../components/SingUpPopupError";
-import SingUpAuth from "../components/SingUpAuth";
+import SingUpPopupError from "../helpers/SingUpPopupError";
+import SingUpAuth from "../helpers/SingUpAuth";
 
 function SignUp() {
   const navigate = useNavigate();

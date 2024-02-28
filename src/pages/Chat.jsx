@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Nav from "../components/Nav";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
-import SendMsgUI from "../components/SendMsgUI";
+import SendMsgUI from "../helpers/SendMsgUI";
 import { signOut } from "firebase/auth";
 import { auth, q } from "../firebase";
 import { onSnapshot } from "firebase/firestore";
+import { RoomContext } from "../App";
 
 const sendIcon = (
   <svg
@@ -25,17 +26,18 @@ const sendIcon = (
   </svg>
 );
 
-const Chat = () => {
+const Chat = (props) => {
   useAuthRedirect();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [messages, setMessages] = useState([]);
   const chat = useRef();
   const sidebar = useRef();
-  // scroll the chat to the bottom
+  const currentRoom = useContext(RoomContext);
 
+  // scroll the chat to the bottom
   useEffect(() => {
     chat.current?.scrollTo(0, chat.current?.scrollHeight);
-  }, [messages]);
+  }, [messages, props]);
 
   const handleClick = () => {
     if (!chat?.current || !editorState.getCurrentContent()) return;
@@ -44,13 +46,14 @@ const Chat = () => {
       editorState,
       setEditorState,
       EditorState,
+      currentRoom: currentRoom.room,
     });
   };
 
   // get the messages from the database
   useEffect(() => {
     // scrollToBottom();
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q(currentRoom.room), (snapshot) => {
       let messages = [];
       snapshot.forEach((doc) => {
         messages.push({ ...doc.data(), id: doc.id });
@@ -58,7 +61,7 @@ const Chat = () => {
       setMessages(messages);
     });
     return () => unsubscribe();
-  }, []);
+  }, [currentRoom.room]);
 
   // // "ctrl + enter" method has an issue
   // useEffect(() => {

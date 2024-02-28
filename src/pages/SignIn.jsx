@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import Popup, { setPopup } from "../components/Popup";
-import SignInPopupError from "../components/SingInPopupError";
-import SingInAuth from "../components/SignInAuth";
+import SignInPopupError from "../helpers/SingInPopupError";
+import SingInAuth from "../helpers/SignInAuth";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -14,8 +14,7 @@ function SignIn() {
     const isNotValidAuth = await SingInAuth({ email, pwd });
     if (isNotValidAuth)
       setPopup({ isPopup: true, heading: "Error", text: isNotValidAuth });
-    if (!isNotValidAuth) navigate("/chat");
-    // if (!isNotValidAuth) navigate("/rooms");
+    if (!isNotValidAuth) navigate("/rooms");
   };
 
   return (
