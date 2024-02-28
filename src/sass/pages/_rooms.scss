@@ -40,18 +40,40 @@
     align-items: center;
     gap: 15px;
     padding: 10px 20px;
+    .add-room,
     .room {
       display: flex;
       justify-content: space-between;
       align-items: center;
       background-color: $white;
-      padding: 10px 20px;
       width: 100%;
       font-family: $secondary-font-stack;
       font-size: 25px;
+    }
+    .room {
+      padding: 10px 20px;
       cursor: pointer;
       @include on-event {
         background-color: $green-cyan;
+      }
+    }
+    .add-room {
+      padding: 10px 20px 10px 10px;
+      #add-room-input {
+        padding-inline: 10px;
+      }
+      button {
+        // background-color: transparent;
+        display: block;
+        cursor: pointer;
+        width: 70px;
+        font-size: 25px;
+        writing-mode: horizontal-tb;
+        border: 1px solid black;
+        // height: 36px;
+        &:hover {
+          filter: invert(1);
+        }
       }
     }
   }

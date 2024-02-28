@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import Nav from "../components/Nav";
 import useAuthRedirect from "../hooks/useAuthRedirect";
-import { auth } from "../firebase";
+import { auth, queryRooms } from "../firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import AddRoom from "../components/AddRooom";
+import { onSnapshot } from "firebase/firestore";
+import Popup from "../components/Popup";
 const searchIcon = (
   <svg
     width="36"
@@ -23,16 +26,39 @@ const searchIcon = (
 const Chat = () => {
   useAuthRedirect();
   const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState("");
+  const [rooms, setRooms] = useState([]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUsername(user.displayName);
+      setUserId(user.uid);
     }
   });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!e.target[0].value) return;
+    AddRoom({ roomName: e.target[0].value, admin: userId });
+    e.target[0].value = "";
+    // navigate(`/chat/${roomName}`);
+  };
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(queryRooms, (snapshot) => {
+      const rooms = [];
+      snapshot.forEach((doc) => {
+        rooms.push({ ...doc.data(), id: doc.id });
+      });
+      setRooms(rooms);
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div id="rooms" className="container">
       <Nav pageName="rooms" />
+      <Popup />
       <div id="search">
         <form action="#">
           <input
@@ -53,102 +79,26 @@ const Chat = () => {
         </button>
       </aside>
       <div id="results">
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
-        <Link to={"/chat"} className="room">
-          <div className="room-name">The First Room</div>
-          <div className="online-users">
-            Online: <span className="count-online-users">2</span>
-          </div>
-        </Link>
+        <form onSubmit={handleSubmit} className="add-room" action="">
+          <input
+            id="add-room-input"
+            type="text"
+            placeholder="Enter room name..."
+            spellCheck="false"
+          />
+          <button>+</button>
+        </form>
+        {rooms.map((room) => {
+          const roomName = room.name.replace(/\s+/g, "-");
+          return (
+            <Link key={room.id} to={`/chat/${roomName}`} className="room">
+              <div className="room-name">{room.name}</div>
+              <div className="online-users">
+                Online: <span className="count-online-users">{":)"}</span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

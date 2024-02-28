@@ -24,6 +24,11 @@ export const storage = getStorage();
 // Initialize firestore
 export const db = getFirestore();
 
-// // set collection
-// export const colRef = collection(db, "messages");
+// Set queries
+// messages
 export const q = query(collection(db, "messages"), orderBy("timestamp"));
+// rooms
+export const queryRooms = query(
+  collection(db, "rooms"),
+  orderBy("timestamp", "desc")
+);

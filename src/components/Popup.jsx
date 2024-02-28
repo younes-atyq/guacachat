@@ -1,5 +1,13 @@
 import { useEffect } from "react";
 
+/**
+ * Set the pop-up window content
+ *
+ * @param {object} options - pop-up content options
+ * @param {boolean} options.isPopup - is the pop-up window displayed
+ * @param {string} options.heading - pop-up window heading
+ * @param {string} options.text - pop-up window text
+ */
 export const setPopup = ({ isPopup, heading, text }) => {
   if (!isPopup) {
     document.querySelector(".pop-up-wrapper").style.display = "none";
@@ -12,6 +20,7 @@ export const setPopup = ({ isPopup, heading, text }) => {
 
 const Popup = () => {
   useEffect(() => {
+    // Close the pop-up when clicking outside of it
     document.addEventListener("click", (e) => {
       if (
         e.target.classList.contains("pop-up-close") ||
@@ -20,12 +29,14 @@ const Popup = () => {
         document.querySelector(".pop-up-wrapper").style.display = "none";
       }
     });
+    // Close the pop-up when pressing the escape key
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         document.querySelector(".pop-up-wrapper").style.display = "none";
       }
     });
   });
+  // Render the pop-up window
   return (
     <div className="pop-up-wrapper">
       <div className="pop-up-overlay"></div>
