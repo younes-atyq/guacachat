@@ -1,8 +1,11 @@
-import { setPopup } from "./Popup";
+import { setPopup } from "../components/Popup";
 
 const SignInPopupError = ({ email, pwd }) => {
   let isValid;
   let error = null;
+
+  // check all fields are filled
+  if (email === "" || pwd === "") error = "Please fill in all fields";
 
   // check if email is valid
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

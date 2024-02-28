@@ -26,7 +26,8 @@ export const db = getFirestore();
 
 // Set queries
 // messages
-export const q = query(collection(db, "messages"), orderBy("timestamp"));
+export const q = (roomName) =>
+  query(collection(db, "rooms", roomName, "messages"), orderBy("timestamp"));
 // rooms
 export const queryRooms = query(
   collection(db, "rooms"),

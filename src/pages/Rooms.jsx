@@ -3,10 +3,11 @@ import Nav from "../components/Nav";
 import useAuthRedirect from "../hooks/useAuthRedirect";
 import { auth, queryRooms } from "../firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
-import AddRoom from "../components/AddRooom";
+import { useContext, useEffect, useState } from "react";
+import AddRoom from "../helpers/AddRooom";
 import { onSnapshot } from "firebase/firestore";
 import Popup from "../components/Popup";
+import { RoomContext } from "../App";
 const searchIcon = (
   <svg
     width="36"
@@ -28,6 +29,7 @@ const Chat = () => {
   const [username, setUsername] = useState("");
   const [userId, setUserId] = useState("");
   const [rooms, setRooms] = useState([]);
+  const chosenRoom = useContext(RoomContext);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -91,10 +93,15 @@ const Chat = () => {
         {rooms.map((room) => {
           const roomName = room.name.replace(/\s+/g, "-");
           return (
-            <Link key={room.id} to={`/chat/${roomName}`} className="room">
+            <Link
+              onClick={() => chosenRoom.setRoom(room.name)}
+              key={room.id}
+              to={`/chat/${roomName}`}
+              className="room"
+            >
               <div className="room-name">{room.name}</div>
               <div className="online-users">
-                Online: <span className="count-online-users">{":)"}</span>
+                Online: <span className="count-online-users">{"(:"}</span>
               </div>
             </Link>
           );

@@ -3,9 +3,14 @@ import { convertToHTML } from "draft-convert";
 import SendMsg from "./SendMsg";
 import { auth } from "../firebase";
 
-const SendMsgUI = ({ editorState, setEditorState, EditorState, chat }) => {
+const SendMsgUI = ({
+  editorState,
+  setEditorState,
+  EditorState,
+  currentRoom,
+}) => {
   const html = convertToHTML(editorState.getCurrentContent());
-  console.log(html.toString().indexOf('<p class="text-msg"><p></p></p>'));
+
   if (html.toString().indexOf('<p class="text-msg"><p></p></p>') !== -1) return;
 
   const message = document.createElement("div");
@@ -43,7 +48,7 @@ const SendMsgUI = ({ editorState, setEditorState, EditorState, chat }) => {
   // reset the editor
   setEditorState(EditorState.createEmpty());
   // send the message
-  SendMsg({ message: messageContent, username });
+  SendMsg({ message: messageContent, username, currentRoom });
 };
 
 export default SendMsgUI;

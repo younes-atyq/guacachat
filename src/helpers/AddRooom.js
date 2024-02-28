@@ -1,6 +1,6 @@
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { setPopup } from "./Popup";
+import { setPopup } from "../components/Popup";
 
 /**
  * Add a new room to the database if it doesn't already exist.
@@ -20,6 +20,7 @@ const AddRoom = async ({ roomName, admin }) => {
       name: roomName,
       admin,
       timestamp: serverTimestamp(),
+      messages: [],
     });
     console.log("room added");
   } catch (error) {
