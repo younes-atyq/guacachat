@@ -6,7 +6,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
 import SendMsgUI from "../helpers/SendMsgUI";
 import { signOut } from "firebase/auth";
-import { auth, q } from "../firebase";
+import { auth, queryCurrentRoom } from "../firebase";
 import { onSnapshot } from "firebase/firestore";
 import { RoomContext } from "../App";
 
@@ -53,13 +53,16 @@ const Chat = (props) => {
   // get the messages from the database
   useEffect(() => {
     // scrollToBottom();
-    const unsubscribe = onSnapshot(q(currentRoom.room), (snapshot) => {
-      let messages = [];
-      snapshot.forEach((doc) => {
-        messages.push({ ...doc.data(), id: doc.id });
-      });
-      setMessages(messages);
-    });
+    const unsubscribe = onSnapshot(
+      queryCurrentRoom(currentRoom.room),
+      (snapshot) => {
+        let messages = [];
+        snapshot.forEach((doc) => {
+          messages.push({ ...doc.data(), id: doc.id });
+        });
+        setMessages(messages);
+      }
+    );
     return () => unsubscribe();
   }, [currentRoom.room]);
 

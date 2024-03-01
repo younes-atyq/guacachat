@@ -1,12 +1,14 @@
 import Nav from "../components/Nav";
 import useAuthRedirect from "../hooks/useAuthRedirect";
-import { auth, colRooms, queryRooms } from "../firebase";
+import { auth, colRooms } from "../firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import AddRoom from "../helpers/AddRooom";
-import { getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import AddRoom from "../helpers/AddRoom";
+import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 import Popup from "../components/Popup";
 import GetRooms from "../components/GetRooms";
+import { debounce } from "lodash";
+
 const searchIcon = (
   <svg
     width="36"
@@ -28,9 +30,9 @@ const Chat = () => {
   const [username, setUsername] = useState("");
   const [userId, setUserId] = useState("");
   const [rooms, setRooms] = useState([]);
+  const [search, setSearch] = useState("");
 
-  // I'll use when I figure out how to filter the rooms
-  // const [search, setSearch] = useState("");
+  const debouncedSetSearch = debounce(setSearch, 200);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -46,54 +48,21 @@ const Chat = () => {
     e.target[0].value = "";
   };
 
+  // I know there no point from adding this button in the UI, but I'll add it anyway
   const handleSearch = (e) => {
     e.preventDefault();
-    filterRooms(e.target[0].value);
   };
 
-  const filterRooms = (keyWord) => {
+  useEffect(() => {
     let q;
-    if (!keyWord) q = query(colRooms, orderBy("timestamp", "desc"));
+    if (!search) q = query(colRooms, orderBy("timestamp", "desc"));
     else
       q = query(
         colRooms,
-        where("name", ">=", keyWord),
-        where("name", "<=", keyWord + "\uf8ff")
+        where("name", ">=", search),
+        where("name", "<=", search + "\uf8ff")
       );
-
-    const rooms = [];
-    getDocs(q).then((snapshot) => {
-      snapshot.forEach((doc) => {
-        rooms.push({ ...doc.data(), id: doc.id });
-      });
-      setRooms(rooms);
-    });
-    return "hello";
-  };
-
-  // I still have an issue with filtering on every keydown
-  // const filterRooms = memo(() => {
-  //   let q;
-  //   if (!search) q = query(colRooms, orderBy("timestamp", "desc"));
-  //   else
-  //     q = query(
-  //       colRooms,
-  //       where("name", ">=", search),
-  //       where("name", "<=", search + "\uf8ff")
-  //     );
-
-  //   const rooms = [];
-  //   getDocs(q).then((snapshot) => {
-  //     snapshot.forEach((doc) => {
-  //       rooms.push({ ...doc.data(), id: doc.id });
-  //     });
-  //     // setRooms(rooms);
-  //   });
-  //   return "hello";
-  // }, [search]);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(queryRooms, (snapshot) => {
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const rooms = [];
       snapshot.forEach((doc) => {
         rooms.push({ ...doc.data(), id: doc.id });
@@ -101,7 +70,7 @@ const Chat = () => {
       setRooms(rooms);
     });
     return () => unsubscribe();
-  }, []);
+  }, [search]);
 
   return (
     <div id="rooms" className="container">
@@ -114,6 +83,7 @@ const Chat = () => {
             placeholder="Search for rooms..."
             id="search-input"
             className="search-input"
+            onChange={(e) => debouncedSetSearch(e.target.value)}
           />
           <button value="submit" id="search-icon">
             {searchIcon}
