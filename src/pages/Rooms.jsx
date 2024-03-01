@@ -1,13 +1,12 @@
-import { Link } from "react-router-dom";
 import Nav from "../components/Nav";
 import useAuthRedirect from "../hooks/useAuthRedirect";
-import { auth, queryRooms } from "../firebase";
+import { auth, colRooms, queryRooms } from "../firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AddRoom from "../helpers/AddRooom";
-import { onSnapshot } from "firebase/firestore";
+import { getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import Popup from "../components/Popup";
-import { RoomContext } from "../App";
+import GetRooms from "../components/GetRooms";
 const searchIcon = (
   <svg
     width="36"
@@ -29,7 +28,9 @@ const Chat = () => {
   const [username, setUsername] = useState("");
   const [userId, setUserId] = useState("");
   const [rooms, setRooms] = useState([]);
-  const chosenRoom = useContext(RoomContext);
+
+  // I'll use when I figure out how to filter the rooms
+  // const [search, setSearch] = useState("");
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -43,8 +44,53 @@ const Chat = () => {
     if (!e.target[0].value) return;
     AddRoom({ roomName: e.target[0].value, admin: userId });
     e.target[0].value = "";
-    // navigate(`/chat/${roomName}`);
   };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    filterRooms(e.target[0].value);
+  };
+
+  const filterRooms = (keyWord) => {
+    let q;
+    if (!keyWord) q = query(colRooms, orderBy("timestamp", "desc"));
+    else
+      q = query(
+        colRooms,
+        where("name", ">=", keyWord),
+        where("name", "<=", keyWord + "\uf8ff")
+      );
+
+    const rooms = [];
+    getDocs(q).then((snapshot) => {
+      snapshot.forEach((doc) => {
+        rooms.push({ ...doc.data(), id: doc.id });
+      });
+      setRooms(rooms);
+    });
+    return "hello";
+  };
+
+  // I still have an issue with filtering on every keydown
+  // const filterRooms = memo(() => {
+  //   let q;
+  //   if (!search) q = query(colRooms, orderBy("timestamp", "desc"));
+  //   else
+  //     q = query(
+  //       colRooms,
+  //       where("name", ">=", search),
+  //       where("name", "<=", search + "\uf8ff")
+  //     );
+
+  //   const rooms = [];
+  //   getDocs(q).then((snapshot) => {
+  //     snapshot.forEach((doc) => {
+  //       rooms.push({ ...doc.data(), id: doc.id });
+  //     });
+  //     // setRooms(rooms);
+  //   });
+  //   return "hello";
+  // }, [search]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(queryRooms, (snapshot) => {
@@ -62,7 +108,7 @@ const Chat = () => {
       <Nav pageName="rooms" />
       <Popup />
       <div id="search">
-        <form action="#">
+        <form onSubmit={handleSearch} action="#">
           <input
             type="text"
             placeholder="Search for rooms..."
@@ -90,22 +136,7 @@ const Chat = () => {
           />
           <button>+</button>
         </form>
-        {rooms.map((room) => {
-          const roomName = room.name.replace(/\s+/g, "-");
-          return (
-            <Link
-              onClick={() => chosenRoom.setRoom(room.name)}
-              key={room.id}
-              to={`/chat/${roomName}`}
-              className="room"
-            >
-              <div className="room-name">{room.name}</div>
-              <div className="online-users">
-                Online: <span className="count-online-users">{"(:"}</span>
-              </div>
-            </Link>
-          );
-        })}
+        <GetRooms rooms={rooms} />
       </div>
     </div>
   );

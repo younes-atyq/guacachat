@@ -6,7 +6,10 @@ const useAuthRedirect = () => {
   const navigate = useNavigate();
 
   return onAuthStateChanged(auth, (user) => {
-    console.log(user ? "user is signed in" : "user is signed out");
+    console.log(
+      "a render happened |",
+      user ? "user is signed in" : "user is signed out"
+    );
     // When sign up the username not showing up
     // temporary fix: redirect to home instead of rooms
     if (user) {

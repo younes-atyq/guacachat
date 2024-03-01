@@ -35,7 +35,7 @@ const Popup = () => {
         document.querySelector(".pop-up-wrapper").style.display = "none";
       }
     });
-  });
+  }, []);
   // Render the pop-up window
   return (
     <div className="pop-up-wrapper">

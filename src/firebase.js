@@ -1,7 +1,13 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import { collection, getFirestore, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  getFirestore,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 
 // setup firebase
 const firebaseConfig = {
@@ -29,6 +35,7 @@ export const db = getFirestore();
 export const q = (roomName) =>
   query(collection(db, "rooms", roomName, "messages"), orderBy("timestamp"));
 // rooms
+export const colRooms = collection(db, "rooms");
 export const queryRooms = query(
   collection(db, "rooms"),
   orderBy("timestamp", "desc")
