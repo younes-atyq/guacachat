@@ -1,6 +1,6 @@
 import { setPopup } from "../components/Popup";
 
-const SingUpPopupError = ({ username, email, pwd, confirm }) => {
+const singUpPopupError = ({ username, email, pwd, confirm }) => {
   let isValid;
   let error = null;
   // check all fields are filled
@@ -25,4 +25,4 @@ const SingUpPopupError = ({ username, email, pwd, confirm }) => {
   return isValid;
 };
 
-export default SingUpPopupError;
+export default singUpPopupError;

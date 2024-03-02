@@ -2,7 +2,7 @@ import { doc, setDoc } from "firebase/firestore/lite";
 import { auth, db } from "../firebase.js";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
-const SingUpAuth = async ({ username, email, pwd }) => {
+const singUpAuth = async ({ username, email, pwd }) => {
   return await createUserWithEmailAndPassword(auth, email, pwd)
     .then(() => {
       updateProfile(auth.currentUser, { displayName: username }).then(() => {
@@ -27,4 +27,4 @@ const SingUpAuth = async ({ username, email, pwd }) => {
     });
 };
 
-export default SingUpAuth;
+export default singUpAuth;
