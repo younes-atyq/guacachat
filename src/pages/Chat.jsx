@@ -9,22 +9,7 @@ import { signOut } from "firebase/auth";
 import { auth, queryCurrentRoom } from "../firebase";
 import { onSnapshot } from "firebase/firestore";
 import { RoomContext } from "../App";
-
-const sendIcon = (
-  <svg
-    width="80"
-    height="40"
-    viewBox="0 0 268 84"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M109.5 1V83H267V1M109.5 1H188.25H267M109.5 1L188.25 35.5L267 1M93 18.5H0M89 35.5H38.5M93 53.5H0"
-      stroke="black"
-      strokeWidth="5"
-    />
-  </svg>
-);
+import PreventRefresh from "../components/PreventRefresh";
 
 const Chat = (props) => {
   useAuthRedirect();
@@ -33,6 +18,9 @@ const Chat = (props) => {
   const chat = useRef();
   const sidebar = useRef();
   const currentRoom = useContext(RoomContext);
+
+  if (currentRoom?.room)
+    sessionStorage.setItem("currentRoom", currentRoom.room);
 
   // scroll the chat to the bottom
   useEffect(() => {
@@ -52,17 +40,19 @@ const Chat = (props) => {
 
   // get the messages from the database
   useEffect(() => {
-    // scrollToBottom();
-    const unsubscribe = onSnapshot(
-      queryCurrentRoom(currentRoom.room),
-      (snapshot) => {
-        let messages = [];
-        snapshot.forEach((doc) => {
-          messages.push({ ...doc.data(), id: doc.id });
-        });
-        setMessages(messages);
-      }
-    );
+    // the only way I found to get the current room
+    // because the path is not related to the chat
+    let room = currentRoom?.room
+      ? currentRoom?.room
+      : sessionStorage.getItem("currentRoom");
+
+    const unsubscribe = onSnapshot(queryCurrentRoom(room), (snapshot) => {
+      let messages = [];
+      snapshot.forEach((doc) => {
+        messages.push({ ...doc.data(), id: doc.id });
+      });
+      setMessages(messages);
+    });
     return () => unsubscribe();
   }, [currentRoom.room]);
 
@@ -74,11 +64,12 @@ const Chat = (props) => {
   //       document.querySelector("button").click();
   //     }
   //   });
-  //   return () => unsubscribe();
+  //   return () => unsubscribe;
   // }, []);
 
   return (
     <div id="chat" className="container">
+      <PreventRefresh />
       <Nav pageName="rooms" />
       <div ref={chat} id="messages">
         {messages.map((message, index) => (
@@ -101,7 +92,7 @@ const Chat = (props) => {
       </button>
 
       <aside ref={sidebar} id="room">
-        <h2 id="room-name">The First Chat Room</h2>
+        <h2 id="room-name">{currentRoom.room}</h2>
         <button id="logout" onClick={() => signOut(auth)}>
           Logout
         </button>
@@ -128,7 +119,7 @@ const Chat = (props) => {
         />
         <div>
           <button onClick={handleClick} title="Ctrl + Enter" id="send">
-            {sendIcon}
+            Send
           </button>
         </div>
       </div>

@@ -4,7 +4,7 @@
   @include page-content(null, $green-cyan, 893px);
   display: grid;
   grid-template-columns: 1fr 251px;
-  grid-template-rows: 1fr 215px;
+  grid-template-rows: 1fr 175px;
   justify-content: end;
   gap: 10px;
   @media (max-width: 992px) {
@@ -28,18 +28,21 @@
     display: none;
     z-index: 3;
     position: absolute;
-    top: 50%;
+    top: 30%;
     right: -1px;
     transform: translateY(-50%);
     font-size: 16px;
-    background-color: #e10087d2;
+    background-color: $black;
     border: none;
-    padding: 3px;
+    // padding: 3px;
+    width: 22px;
+    height: 125px;
     color: $white;
     font-weight: bold;
     cursor: pointer;
     &.active {
-      right: 240px;
+      right: 244px;
+      width: 16px;
     }
 
     &:hover,
@@ -62,10 +65,11 @@
     height: 100%;
   }
   #input-field {
-    align-items: center;
+    align-items: end;
     gap: 20px;
     display: flex;
     grid-area: 2/1/2/2;
+    padding-bottom: 20px;
     @include mq("sm") {
       flex-direction: column;
       display: flex;
@@ -125,13 +129,8 @@
     #send {
       padding: 0;
       cursor: pointer;
-      background-color: transparent;
-      border: none;
-      filter: contrast(0.7);
-
-      @include on-event {
-        filter: contrast(1);
-      }
+      // background-color: transparent;
+      padding: 5px 10px;
     }
     #info-msg {
       position: absolute;

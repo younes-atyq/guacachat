@@ -11,7 +11,7 @@ const GetRooms = (props) => {
       <Link
         onClick={() => chosenRoom.setRoom(room.name)}
         key={room.id}
-        to={`/chat/${roomURL}`}
+        to={`/chat/${roomURL}-the-path-is-not-related-to-the-chat`}
         className="room"
       >
         <div className="room-name">{room.name}</div>
