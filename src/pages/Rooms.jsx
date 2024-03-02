@@ -3,10 +3,10 @@ import useAuthRedirect from "../hooks/useAuthRedirect";
 import { auth, colRooms } from "../firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import AddRoom from "../helpers/AddRoom";
 import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 import Popup from "../components/Popup";
 import GetRooms from "../components/GetRooms";
+import AddRoom from "../components/AddRoom";
 import { debounce } from "lodash";
 
 const searchIcon = (
@@ -41,14 +41,7 @@ const Chat = () => {
     }
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!e.target[0].value) return;
-    AddRoom({ roomName: e.target[0].value, admin: userId });
-    e.target[0].value = "";
-  };
-
-  // I know there no point from adding this button in the UI, but I'll add it anyway
+  // Ik there is no point from adding this button, but I'll add it anyway
   const handleSearch = (e) => {
     e.preventDefault();
   };
@@ -97,15 +90,7 @@ const Chat = () => {
         </button>
       </aside>
       <div id="results">
-        <form onSubmit={handleSubmit} className="add-room" action="">
-          <input
-            id="add-room-input"
-            type="text"
-            placeholder="Enter room name..."
-            spellCheck="false"
-          />
-          <button>+</button>
-        </form>
+        <AddRoom userId={userId} />
         <GetRooms rooms={rooms} />
       </div>
     </div>

@@ -11,7 +11,7 @@ import { setPopup } from "../components/Popup";
  * @param {string} param0.admin - The ID of the user who will be the admin of the new room.
  * @return {Promise<void>} A promise that resolves once the room is added to the database.
  */
-const AddRoom = async ({ roomName, admin }) => {
+const AddRoomFunc = async ({ roomName, admin }) => {
   try {
     const room = await getDoc(doc(db, "rooms", roomName));
 
@@ -28,4 +28,4 @@ const AddRoom = async ({ roomName, admin }) => {
   }
 };
 
-export default AddRoom;
+export default AddRoomFunc;
