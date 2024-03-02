@@ -1,9 +1,8 @@
-// import { useState } from "react";
 import { convertToHTML } from "draft-convert";
-import SendMsg from "./SendMsg";
+import SendMsg from "./sendMsg";
 import { auth } from "../firebase";
 
-const SendMsgUI = ({
+const sendMsgUI = ({
   editorState,
   setEditorState,
   EditorState,
@@ -11,10 +10,7 @@ const SendMsgUI = ({
 }) => {
   const html = convertToHTML(editorState.getCurrentContent());
 
-  if (html.toString().indexOf('<p class="text-msg"><p></p></p>') !== -1) return;
-
   const message = document.createElement("div");
-
   const textMsg = document.createElement("p");
 
   textMsg.innerHTML = html;
@@ -27,28 +23,21 @@ const SendMsgUI = ({
   // get the current time
   let currentMinute = new Date().getMinutes();
   let currentHour = new Date().getHours();
-  if (currentHour < 10) {
-    currentHour = "0" + currentHour;
-  }
-  if (currentMinute < 10) {
-    currentMinute = "0" + currentMinute;
-  }
+  // format the time
+  currentHour = currentHour < 10 ? "0" + currentHour : currentHour;
+  currentMinute = currentMinute < 10 ? "0" + currentMinute : currentMinute;
   const time = currentHour + ":" + currentMinute;
 
   name.innerHTML = `${username} <span class='time'>${time}</span>`;
   // append the name and the message
   message.append(name);
   message.append(textMsg);
-
-  // chat?.append(message);
-
   // set the converted content
   const messageContent = message.innerHTML;
-
   // reset the editor
   setEditorState(EditorState.createEmpty());
   // send the message
   SendMsg({ message: messageContent, username, currentRoom });
 };
 
-export default SendMsgUI;
+export default sendMsgUI;

@@ -1,7 +1,7 @@
 import { auth } from "../firebase.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-const SingInAuth = async ({ email, pwd }) => {
+const singInAuth = async ({ email, pwd }) => {
   return await signInWithEmailAndPassword(auth, email, pwd)
     .then(() => {
       return false;
@@ -17,4 +17,4 @@ const SingInAuth = async ({ email, pwd }) => {
     });
 };
 
-export default SingInAuth;
+export default singInAuth;

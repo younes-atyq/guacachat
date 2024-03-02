@@ -56,7 +56,7 @@
     }
   }
   #messages,
-  #room,
+  #room-info,
   #input-field {
     background-color: $silver-chalice;
     // justify-content: center;
@@ -66,7 +66,6 @@
   }
   #input-field {
     align-items: end;
-    gap: 20px;
     display: flex;
     grid-area: 2/1/2/2;
     padding-bottom: 20px;
@@ -129,8 +128,16 @@
     #send {
       padding: 0;
       cursor: pointer;
+      font-family: $secondary-font-stack;
+      font-size: 22px;
       // background-color: transparent;
-      padding: 5px 10px;
+      padding: 10px 15px;
+      width: 110px;
+      height: 70px;
+      @include mq("sm") {
+        width: 100%;
+        height: 100%;
+      }
     }
     #info-msg {
       position: absolute;
@@ -213,7 +220,7 @@
       }
     }
   }
-  #room {
+  #room-info {
     grid-area: 1 / 2 / 3 / 3;
     @media (max-width: 767px) {
       z-index: 2;
@@ -231,22 +238,37 @@
     flex-direction: column;
     justify-content: start;
     align-items: center;
-    #room-name {
+    * {
       font-family: $secondary-font-stack;
+    }
+    #room-name {
       text-decoration: underline;
-      font-size: 25px;
       margin: 0;
       padding: 0;
       align-self: center;
-      margin-bottom: 40px;
     }
     #logout {
-      font-family: $secondary-font-stack;
       font-size: 22px;
       padding: 5px 10px;
       background-color: $fuchsia-rose;
       color: $white;
       cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #online-users {
+      align-self: flex-start;
+      margin-block: 30px;
+      flex: 1;
+      ul {
+        margin-top: 10px;
+        margin-left: 50px;
+        list-style-type: square;
+        // change list style color
+
+        li {
+          font-family: $body-font-stack;
+        }
+      }
     }
   }
 }

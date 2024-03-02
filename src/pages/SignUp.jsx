@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import Popup, { setPopup } from "../components/Popup";
-import SingUpPopupError from "../helpers/SingUpPopupError";
-import SingUpAuth from "../helpers/SingUpAuth";
+import SingUpPopupError from "../helpers/singUpPopupError";
+import singUpAuth from "../helpers/singUpAuth";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ function SignUp() {
 
     const isValid = SingUpPopupError({ username, email, pwd, confirm });
     if (!isValid) return;
-    const isValidAuth = await SingUpAuth({ username, email, pwd });
+    const isValidAuth = await singUpAuth({ username, email, pwd });
     if (!isValidAuth) navigate("/home");
     if (isValidAuth)
       setPopup({ isPopup: true, heading: "Error", text: isValidAuth });

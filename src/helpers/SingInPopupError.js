@@ -1,6 +1,6 @@
 import { setPopup } from "../components/Popup";
 
-const SignInPopupError = ({ email, pwd }) => {
+const signInPopupError = ({ email, pwd }) => {
   let isValid;
   let error = null;
 
@@ -28,4 +28,4 @@ const SignInPopupError = ({ email, pwd }) => {
   return isValid;
 };
 
-export default SignInPopupError;
+export default signInPopupError;

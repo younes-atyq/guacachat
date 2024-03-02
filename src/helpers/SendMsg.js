@@ -1,9 +1,10 @@
 import { serverTimestamp, addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase";
 
-const SendMsg = ({ message, username, currentRoom }) => {
+const sendMsg = ({ message, username, currentRoom }) => {
   if (message) {
-    const colRef = collection(db, "rooms", currentRoom, "messages"); // Assuming 'rooms' is the main collection
+    const colRef = collection(db, "rooms", currentRoom, "messages");
+    console.log(currentRoom);
     addDoc(colRef, {
       message,
       username,
@@ -14,4 +15,4 @@ const SendMsg = ({ message, username, currentRoom }) => {
   }
 };
 
-export default SendMsg;
+export default sendMsg;

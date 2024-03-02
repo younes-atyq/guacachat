@@ -1,9 +1,9 @@
-import AddRoomFunc from "../helpers/AddRoomFunc";
+import addRoomFunc from "../helpers/addRoomFunc";
 const AddRoom = ({ userId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!e.target[0].value) return;
-    AddRoomFunc({ roomName: e.target[0].value, admin: userId });
+    addRoomFunc({ roomName: e.target[0].value, admin: userId });
     e.target[0].value = "";
   };
 

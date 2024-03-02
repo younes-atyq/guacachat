@@ -9,7 +9,7 @@
     "dompurify": "^3.0.8",
     "draft-convert": "^2.1.13",
     "draft-js": "^0.11.7",
-    "firebase": "^10.8.0",
+    "firebase": "^10.8.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
