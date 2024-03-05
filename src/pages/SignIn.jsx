@@ -23,7 +23,7 @@ function SignIn() {
     <div id="sign-in" className="container">
       <Popup />
       <h2 className="title">Sign In</h2>
-      <form onSubmit={handleSubmit} action="#">
+      <form autoComplete="off" onSubmit={handleSubmit} action="#">
         <label htmlFor="email">
           <span>Email:</span> <input type="text" name="email" id="email" />
         </label>

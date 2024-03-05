@@ -8,7 +8,12 @@ const AddRoom = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="add-room" action="">
+    <form
+      autoComplete="off"
+      onSubmit={handleSubmit}
+      className="add-room"
+      action=""
+    >
       <input
         id="add-room-input"
         type="text"

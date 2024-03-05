@@ -24,7 +24,7 @@ function SignUp() {
     <div id="sign-up" className="container">
       <Popup />
       <h2 className="title">Sign Up</h2>
-      <form onSubmit={handleSubmit} action="#">
+      <form autoComplete="off" onSubmit={handleSubmit} action="#">
         <label htmlFor="username">
           <span>Username:</span>
           <input type="text" name="username" id="username" />

@@ -19,6 +19,7 @@ import setUserOnline from "../helpers/setUserOnline";
 import { Link, useNavigate } from "react-router-dom";
 import setUserStates from "../helpers/setUserStates";
 import Popup from "../components/Popup";
+import GetMessages from "../components/GetMessages";
 
 const Chat = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -121,7 +122,6 @@ const Chat = (props) => {
     } catch (error) {
       console.log(error);
     }
-    // deleteDoc(doc(db, "rooms", currentRoomName, "messages"))
   };
 
   useEffect(() => {
@@ -152,14 +152,9 @@ const Chat = (props) => {
       <Popup />
       <Nav pageName="rooms" preventDefault={false} />
       <div ref={chat} id="messages">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className="message"
-            dangerouslySetInnerHTML={{ __html: message.message }}
-          ></div>
-        ))}
+        <GetMessages messages={messages} />
       </div>
+
       <button
         onClick={(e) => {
           sidebar.current?.classList.toggle("active");
