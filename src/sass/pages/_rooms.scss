@@ -14,10 +14,13 @@
     grid-template-columns: 1fr 1px;
   }
   #nav {
-    --active: #00db96;
-    --inactive: #b6dcb7;
+    --active: $green-cyan;
+    // --inactive: #b6dcb7;
     position: absolute;
     transform: translateY(calc(-100%));
+    .active {
+      color: white;
+    }
     @media (max-width: 567px) {
       right: 50%;
       transform: translate(50%, calc(-100%));
@@ -104,7 +107,7 @@
         }
       }
       button {
-        background-color: transparent;
+        background-color: $white;
         border: none;
         display: block;
         cursor: pointer;
@@ -139,7 +142,6 @@
       letter-spacing: 1.5px;
       margin-bottom: 30px;
       padding: 0;
-      // align-self: center;
     }
     #logout {
       font-family: $secondary-font-stack;
@@ -147,6 +149,11 @@
       padding: 5px 10px;
       background-color: $fuchsia-rose;
       color: $white;
+      cursor: pointer;
+      opacity: 0.95;
+      @include on-event {
+        opacity: 1;
+      }
     }
   }
 }

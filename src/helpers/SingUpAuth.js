@@ -1,6 +1,6 @@
-import { doc, setDoc } from "firebase/firestore/lite";
 import { auth, db } from "../firebase.js";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 const singUpAuth = async ({ username, email, pwd }) => {
   return await createUserWithEmailAndPassword(auth, email, pwd)
@@ -10,9 +10,13 @@ const singUpAuth = async ({ username, email, pwd }) => {
           username: username,
           email: email,
           uid: auth.currentUser.uid,
-        }).then(() => {
-          return false;
-        });
+        })
+          .then(() => {
+            return false;
+          })
+          .catch((error) => {
+            throw error;
+          });
       });
     })
     .catch((error) => {
@@ -21,7 +25,7 @@ const singUpAuth = async ({ username, email, pwd }) => {
       if (error.code === "auth/email-already-in-use") {
         errorMessage = "Email already in use";
       } else {
-        errorMessage = "An error occurred. Please try again.";
+        errorMessage = error.message;
       }
       return errorMessage;
     });

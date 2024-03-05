@@ -4,7 +4,6 @@ import { db } from "../firebase";
 const sendMsg = ({ message, username, currentRoom }) => {
   if (message) {
     const colRef = collection(db, "rooms", currentRoom, "messages");
-    console.log(currentRoom);
     addDoc(colRef, {
       message,
       username,

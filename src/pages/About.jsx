@@ -1,6 +1,9 @@
 import Nav from "../components/Nav";
+import setUserOffline from "../helpers/setUserOffline";
 
 const About = () => {
+  // Set the user state
+  setUserOffline();
   return (
     <div id="about" className="container">
       <Nav pageName="about" />

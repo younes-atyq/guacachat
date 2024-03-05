@@ -6,4 +6,9 @@
     --active: #b6dcb7;
     --inactive: #ccdfcc;
   }
+  p {
+    @include mq(1200px) {
+      max-width: 507px;
+    }
+  }
 }

@@ -1,17 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-//  Set the pop-up window content
-export const setPopup = ({ isPopup, heading, text }) => {
+const Popup = ({ isPopup, heading, text }) => {
+  const wrapper = useRef();
+  const header = useRef();
+  const textArea = useRef();
+
   if (!isPopup) {
-    document.querySelector(".pop-up-wrapper").style.display = "none";
-    return;
+    wrapper.current.style.display = "none";
   }
-  document.querySelector(".pop-up-wrapper").style.display = "block";
-  document.querySelector(".pop-up-header").textContent = heading;
-  document.querySelector(".pop-up-text").innerHTML = text;
-};
+  wrapper.current.style.display = "block";
+  header.current.textContent = heading;
+  textArea.current.innerHTML = text;
 
-const Popup = () => {
   useEffect(() => {
     // Close the pop-up when clicking outside of it
     document.addEventListener("click", (e) => {
@@ -31,12 +31,16 @@ const Popup = () => {
   }, []);
   // Render the pop-up window
   return (
-    <div className="pop-up-wrapper">
+    <div ref={wrapper} className="pop-up-wrapper">
       <div className="pop-up-overlay"></div>
       <div className="pop-up">
         <button className="pop-up-close">X</button>
-        <h2 className="pop-up-header">Pop Up test</h2>
-        <p className="pop-up-text">Pop Up test Pop Up test</p>
+        <h2 ref={header} className="pop-up-header">
+          Pop Up test
+        </h2>
+        <p ref={textArea} className="pop-up-text">
+          Pop Up test Pop Up test
+        </p>
       </div>
     </div>
   );

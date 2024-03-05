@@ -33,7 +33,7 @@ a {
   text-decoration: none;
 
   @include on-event {
-    color: rgb(0, 0, 192);
+    color: rgb(253, 253, 255);
     // text-decoration: underline;
   }
 }

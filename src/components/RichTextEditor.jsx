@@ -138,7 +138,6 @@ const BLOCK_TYPES = [
   { label: "H2", style: "header-three" },
   { label: "UL", style: "unordered-list-item" },
   { label: "OL", style: "ordered-list-item" },
-  // { label: "Quote", style: "blockquote" },
 ];
 
 const BlockStyleControls = (props) => {

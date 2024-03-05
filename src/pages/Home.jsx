@@ -3,14 +3,18 @@ import Nav from "../components/Nav";
 import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { useState, useEffect } from "react";
+import setUserOffline from "../helpers/setUserOffline";
 
 function Home() {
   const [linkButton, setLinkButton] = useState();
 
+  // Set the user state
+  setUserOffline();
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setLinkButton(<Link to="/chat">Step In</Link>);
+        setLinkButton(<Link to="/rooms">Step In</Link>);
       } else {
         setLinkButton(<Link to="/sign-in">Sign In</Link>);
       }

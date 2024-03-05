@@ -14,7 +14,9 @@ function SignIn() {
     const isNotValidAuth = await singInAuth({ email, pwd });
     if (isNotValidAuth)
       setPopup({ isPopup: true, heading: "Error", text: isNotValidAuth });
-    if (!isNotValidAuth) navigate("/rooms");
+    if (!isNotValidAuth) {
+      navigate("/rooms");
+    }
   };
 
   return (
