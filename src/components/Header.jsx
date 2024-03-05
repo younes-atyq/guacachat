@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const logo = (
   <svg
     width="186"
@@ -76,7 +78,9 @@ const Header = () => {
   return (
     <header>
       <div className="container">
-        <div id="logo">{logo}</div>
+        <Link to={"/"} id="logo">
+          {logo}
+        </Link>
       </div>
     </header>
   );

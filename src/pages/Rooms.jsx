@@ -2,7 +2,7 @@ import Nav from "../components/Nav";
 import useAuthRedirect from "../hooks/useAuthRedirect.js";
 import { auth, colRooms } from "../firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 import Popup from "../components/Popup";
 import GetRooms from "../components/GetRooms";
@@ -32,6 +32,7 @@ const Rooms = () => {
   const [username, setUsername] = useState("");
   const [rooms, setRooms] = useState([]);
   const [search, setSearch] = useState("");
+  const sidebar = useRef();
 
   const debouncedSetSearch = debounce(setSearch, 200);
 
@@ -109,7 +110,16 @@ const Rooms = () => {
           </button>
         </form>
       </div>
-      <aside id="user-information">
+      <button
+        onClick={(e) => {
+          sidebar.current?.classList.toggle("active");
+          e.target?.classList.toggle("active");
+        }}
+        className="menu-btn"
+      >
+        &rarr;
+      </button>
+      <aside ref={sidebar} id="user-information">
         <h2 id="username">{username}</h2>
         <button id="logout" onClick={() => signOut(auth)}>
           Logout
