@@ -119,6 +119,7 @@ const Chat = (props) => {
           });
         }
       );
+      navigate("/rooms");
     } catch (error) {
       console.log(error);
     }
