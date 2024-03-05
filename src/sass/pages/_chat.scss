@@ -47,14 +47,6 @@
       right: 244px;
       width: 16px;
     }
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $white;
-      color: $black;
-      outline: none;
-    }
     @include mq("md") {
       display: block;
     }

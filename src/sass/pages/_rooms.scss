@@ -47,13 +47,6 @@
       width: 16px;
     }
 
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $white;
-      color: $black;
-      outline: none;
-    }
     @include mq("md") {
       display: block;
     }
@@ -98,14 +91,12 @@
         padding-inline: 10px;
       }
       button {
-        // background-color: transparent;
         display: block;
-        cursor: pointer;
         width: 70px;
+        height: 100%;
         font-size: 25px;
+        cursor: pointer;
         writing-mode: horizontal-tb;
-        border: 1px solid black;
-        // height: 36px;
         &:hover {
           filter: invert(1);
         }
