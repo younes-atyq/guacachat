@@ -1,30 +1,29 @@
 import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 
-const setUserOnline = async ({ currentRoom }) => {
+const setUserOffline = async () => {
   if (!sessionStorage.getItem("currentRoom") || !auth?.currentUser?.uid) return;
-
   try {
     const roomRef = doc(
       db,
       "rooms",
-      currentRoom,
+      sessionStorage.getItem("currentRoom"),
       "onlineUsers",
       auth?.currentUser?.uid
     );
 
     const userPresence = await getDoc(roomRef);
-    if (!userPresence.exists() || userPresence.data().state === "online")
+    if (!userPresence.exists() || userPresence.data().state === "offline")
       return;
 
     updateDoc(roomRef, {
       ...userPresence.data(),
-      state: "online",
+      state: "offline",
       timestamp: serverTimestamp(),
     });
   } catch (error) {
-    console.log("Error", error);
+    console.error(error);
   }
 };
 
-export default setUserOnline;
+export default setUserOffline;

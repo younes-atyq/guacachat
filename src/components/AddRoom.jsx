@@ -1,9 +1,9 @@
 import addRoomFunc from "../helpers/addRoomFunc";
-const AddRoom = ({ userId }) => {
+const AddRoom = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!e.target[0].value) return;
-    addRoomFunc({ roomName: e.target[0].value, admin: userId });
+    addRoomFunc({ roomName: e.target[0].value });
     e.target[0].value = "";
   };
 
@@ -12,7 +12,7 @@ const AddRoom = ({ userId }) => {
       <input
         id="add-room-input"
         type="text"
-        placeholder="Enter room name..."
+        placeholder="add a new room"
         spellCheck="false"
       />
       <button value="submit">+</button>

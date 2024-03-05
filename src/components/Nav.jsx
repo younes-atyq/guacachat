@@ -1,10 +1,17 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const Nav = ({ pageName }) => {
+const Nav = ({ pageName, preventDefault = true }) => {
   useEffect(() => {
-    document.querySelector(`[data-${pageName}]`)?.classList.add("active");
-  }, [pageName]);
+    const link = document.querySelector(`[data-${pageName}]`);
+    link?.classList.add("active");
+    // Prevent the default behavior of the link
+    // The rooms page gets stuck in a rendering loop
+    if (!preventDefault) return;
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+    });
+  }, [pageName, preventDefault]);
   return (
     <nav id="nav">
       <ul>

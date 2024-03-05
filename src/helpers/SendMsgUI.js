@@ -7,17 +7,22 @@ const sendMsgUI = ({
   setEditorState,
   EditorState,
   currentRoom,
+  isAdmin,
 }) => {
   const html = convertToHTML(editorState.getCurrentContent());
 
   const message = document.createElement("div");
-  const textMsg = document.createElement("p");
+  const textMsg = document.createElement("div");
 
   textMsg.innerHTML = html;
   textMsg.className = "text-msg";
 
   const name = document.createElement("h3");
   name.className = "name";
+  if (isAdmin) {
+    name.id = "admin";
+    name.prepend("@");
+  }
   // get the username
   const username = auth.currentUser.displayName;
   // get the current time
