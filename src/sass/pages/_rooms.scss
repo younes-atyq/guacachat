@@ -26,6 +26,38 @@
       transform: translate(50%, calc(-100%));
     }
   }
+  .menu-btn {
+    display: none;
+    z-index: 3;
+    position: absolute;
+    top: 30%;
+    right: -1px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    background-color: $black;
+    border: none;
+    // padding: 3px;
+    width: 22px;
+    height: 125px;
+    color: $white;
+    font-weight: bold;
+    cursor: pointer;
+    &.active {
+      right: 244px;
+      width: 16px;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: $white;
+      color: $black;
+      outline: none;
+    }
+    @include mq("md") {
+      display: block;
+    }
+  }
   #search,
   #user-information,
   #results {
@@ -130,6 +162,9 @@
       right: 0;
       height: 100%;
       border-left: 15px solid $green-cyan;
+      &.active {
+        display: flex;
+      }
     }
     display: flex;
     flex-direction: column;

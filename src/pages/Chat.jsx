@@ -75,7 +75,6 @@ const Chat = (props) => {
   useEffect(() => {
     // The only way I found to get the current room because the URL path is not related to the chat
     let room = currentRoomName;
-    // console.log(auth.currentUser.uid === currentRoom.room[2]);
     const unsubscribe = onSnapshot(
       queryCurrentRoomMessages(room),
       (snapshot) => {
@@ -166,7 +165,7 @@ const Chat = (props) => {
           sidebar.current?.classList.toggle("active");
           e.target?.classList.toggle("active");
         }}
-        id="menu-btn"
+        className="menu-btn"
       >
         &rarr;
       </button>
