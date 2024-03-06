@@ -227,10 +227,9 @@
         }
       }
       .text-msg {
-        // need to fix the width
+        margin-left: 20px;
         color: $deep-purple;
         line-height: 1.2;
-        // width: 100%;
         max-width: 700px;
         @include mq("xl") {
           max-width: 500px;
