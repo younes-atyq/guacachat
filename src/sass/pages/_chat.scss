@@ -227,10 +227,16 @@
         }
       }
       .text-msg {
-        margin-left: 20px;
         color: $deep-purple;
         line-height: 1.2;
         max-width: 700px;
+        ul,
+        ol {
+          margin-left: 20px;
+        }
+        ul {
+          list-style-type: disc;
+        }
         @include mq("xl") {
           max-width: 500px;
         }
