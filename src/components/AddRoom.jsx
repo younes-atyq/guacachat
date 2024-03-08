@@ -1,4 +1,4 @@
-import addRoomFunc from "../helpers/addRoomFunc";
+import addRoomFunc from "../helpers/AddRoomFunc";
 const AddRoom = () => {
   const handleSubmit = (e) => {
     e.preventDefault();

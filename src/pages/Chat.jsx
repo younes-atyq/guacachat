@@ -4,7 +4,7 @@ import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
-import SendMsgUI from "../helpers/sendMsgUI";
+import SendMsgUI from "../helpers/SendMsgUI";
 import { auth, db, queryCurrentRoomMessages } from "../firebase";
 import {
   collection,
