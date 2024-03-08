@@ -3,7 +3,7 @@ import Nav from "../components/Nav";
 import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { useState, useEffect } from "react";
-import setUserOffline from "../helpers/setUserOffline";
+import setUserOffline from "../helpers/SetUserOffline";
 
 function Home() {
   const [linkButton, setLinkButton] = useState();
