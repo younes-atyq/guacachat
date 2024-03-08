@@ -1,5 +1,5 @@
 import { convertToHTML } from "draft-convert";
-import SendMsg from "./sendMsg";
+import SendMsg from "./SendMsg";
 import { auth } from "../firebase";
 
 const sendMsgUI = ({
