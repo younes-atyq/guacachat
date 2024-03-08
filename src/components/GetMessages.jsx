@@ -16,9 +16,9 @@ const GetMessages = (props) => {
 
     return (
       <div key={i} className="message">
-        <h3 className={message?.isAdmin ? "name admin" : "name"}>
+        <span className={message?.isAdmin ? "name admin" : "name"}>
           {message.username} <span className="time">{time}</span>
-        </h3>
+        </span>
         <div dangerouslySetInnerHTML={{ __html: message.message }}></div>
       </div>
     );
