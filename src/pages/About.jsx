@@ -1,5 +1,5 @@
 import Nav from "../components/Nav";
-import setUserOffline from "../helpers/setUserOffline";
+import setUserOffline from "../helpers/SetUserOffline";
 
 const About = () => {
   // Set the user state

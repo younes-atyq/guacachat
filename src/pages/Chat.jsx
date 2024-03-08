@@ -15,9 +15,9 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { RoomContext } from "../App";
-import setUserOnline from "../helpers/setUserOnline";
+import setUserOnline from "../helpers/SetUserOnline";
 import { Link, useNavigate } from "react-router-dom";
-import setUserStates from "../helpers/setUserStates";
+import setUserStates from "../helpers/SetUserStates";
 import Popup from "../components/Popup";
 import GetMessages from "../components/GetMessages";
 

@@ -8,7 +8,7 @@ import Popup from "../components/Popup";
 import GetRooms from "../components/GetRooms";
 import AddRoom from "../components/AddRoom";
 import { debounce } from "lodash";
-import setUserOffline from "../helpers/setUserOffline.js";
+import setUserOffline from "../helpers/SetUserOffline.js";
 
 const searchIcon = (
   <svg
