@@ -28,5 +28,5 @@ export const db = getFirestore();
 export const colRooms = collection(db, "rooms");
 
 // Queries the current room for messages
-export const queryCurrentRoom = (roomName) =>
+export const queryCurrentRoomMessages = (roomName) =>
   query(collection(db, "rooms", roomName, "messages"), orderBy("timestamp"));
