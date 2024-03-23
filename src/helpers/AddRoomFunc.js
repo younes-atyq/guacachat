@@ -7,8 +7,9 @@ import {
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
-import { analytics, auth, db } from "../firebase";
+import { auth, db } from "../firebase";
 import { setPopup } from "../components/Popup";
+import { logEvent } from "firebase/analytics";
 
 // Add a new room to the database, and throw an error if the room already exists.
 const addRoomFunc = async ({ roomName }) => {
@@ -42,7 +43,7 @@ const addRoomFunc = async ({ roomName }) => {
       messages: [],
       onlineUsers: [],
     });
-    analytics("room_created", { name: roomName });
+    // logEvent("room_created", { name: roomName });
   } catch (error) {
     setPopup({ isPopup: true, heading: "Error", text: error.message });
   }

@@ -1,5 +1,6 @@
 import { serverTimestamp, addDoc, collection } from "firebase/firestore";
 import { analytics, db } from "../firebase";
+import { logEvent } from "firebase/analytics";
 
 const sendMsg = ({ message, username, currentRoom, isAdmin }) => {
   if (message) {
@@ -10,7 +11,7 @@ const sendMsg = ({ message, username, currentRoom, isAdmin }) => {
       timestamp: serverTimestamp(),
       isAdmin: isAdmin ? true : false,
     });
-    analytics("message_sent", { message });
+    // logEvent(analytics, "message_sent", { name: currentRoom });
   } else {
     console.log("no message");
   }
