@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { analytics, auth } from "../firebase.js";
+import { auth } from "../firebase.js";
+import { logEvent } from "firebase/analytics";
 
 const useAuthRedirect = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const useAuthRedirect = () => {
       //   user ? "user is signed in" : "user is signed out"
       // );
       if (!user) {
-        analytics("user_signed_out");
+        // logEvent("user_signed_out");
         navigate("/sign-in");
       }
     });
