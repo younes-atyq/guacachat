@@ -1,9 +1,10 @@
-import { auth } from "../firebase.js";
+import { analytics, auth } from "../firebase.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 const singInAuth = async ({ email, pwd }) => {
   return await signInWithEmailAndPassword(auth, email, pwd)
     .then(() => {
+      analytics("user_signed_in", { email });
       return false;
     })
     .catch((error) => {

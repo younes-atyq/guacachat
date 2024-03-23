@@ -1,4 +1,4 @@
-import { auth, db } from "../firebase.js";
+import { analytics, auth, db } from "../firebase.js";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
@@ -12,6 +12,7 @@ const singUpAuth = async ({ username, email, pwd }) => {
           uid: auth.currentUser.uid,
         })
           .then(() => {
+            analytics("user_signed_up", { email });
             return false;
           })
           .catch((error) => {
