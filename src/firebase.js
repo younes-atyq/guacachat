@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { collection, getFirestore, orderBy, query } from "firebase/firestore";
+import { getAnalytics } from "firebase/analytics";
 
 // setup firebase
 const firebaseConfig = {
@@ -11,9 +12,13 @@ const firebaseConfig = {
   storageBucket: "guaca-chat.appspot.com",
   messagingSenderId: "558750932690",
   appId: "1:558750932690:web:436a9462f855314ec9170b",
+  measurementId: "G-1CF8W12284",
 };
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
+
+// Initialize Firebase Analytics
+const analytics = getAnalytics(app);
 
 // Initialize Authentication
 export const auth = getAuth();
