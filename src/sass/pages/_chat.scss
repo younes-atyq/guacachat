@@ -205,6 +205,19 @@
           background-color: $green-cyan;
         }
       }
+      .delete-msg {
+        display: block;
+        margin-left: auto;
+        font-family: $secondary-font-stack;
+        padding: 0 5px;
+        background-color: $fuchsia-rose;
+        color: $white;
+        border: 1px solid $black;
+        cursor: pointer;
+        @include on-event {
+          background-color: darken($color: $fuchsia-rose, $amount: 10);
+        }
+      }
       .message {
         display: flex;
         align-items: start;
@@ -322,6 +335,9 @@
         display: block;
         margin-top: 20px;
         background-color: $fuchsia-rose;
+        @include on-event {
+          background-color: darken($color: $fuchsia-rose, $amount: 10);
+        }
       }
       &#go-back {
         background-color: $green-cyan;

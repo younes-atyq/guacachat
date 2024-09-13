@@ -2,6 +2,21 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { RoomContext } from "../App";
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const GetRooms = (props) => {
   const { rooms } = props;
 
@@ -12,7 +27,11 @@ const GetRooms = (props) => {
     // Get the date
     const seconds = room?.timestamp?.seconds || new Date().getSeconds();
     const date = new Date(seconds * 1000);
-    const formattedDate = date.toISOString().split("T")[0];
+    // const formattedDate = date.toISOString().split("T")[0];
+    const newFormattedDate = `${date.getDay()} ${months[date.getMonth()].slice(
+      0,
+      3
+    )} ${date.getFullYear()}`;
     return (
       <Link
         onClick={() =>
@@ -24,7 +43,7 @@ const GetRooms = (props) => {
       >
         <div className="room-name">{room.name}</div>
         <div className="online-users">
-          <span className="count-online-users">{formattedDate}</span>
+          <span className="count-online-users">{newFormattedDate}</span>
         </div>
       </Link>
     );

@@ -153,7 +153,7 @@ const Chat = (props) => {
       <Popup />
       <Nav pageName="rooms" preventDefault={false} />
       <div ref={chat} id="messages">
-        <GetMessages messages={messages} />
+        <GetMessages messages={messages} currentRoom={currentRoomName} />
       </div>
 
       <button
