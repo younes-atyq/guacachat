@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase.js";
-import { logEvent } from "firebase/analytics";
 
 const useAuthRedirect = () => {
   const navigate = useNavigate();

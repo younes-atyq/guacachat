@@ -1,5 +1,22 @@
+import { auth } from "../firebase.js";
+import deleteMsg from "../helpers/DeleteMsg.js";
+
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 const GetMessages = (props) => {
-  const { messages } = props;
+  const { messages, currentRoom } = props;
 
   let prevTime = null;
 
@@ -11,7 +28,7 @@ const GetMessages = (props) => {
       currentDay,
       currentMonth,
       currentYear,
-      isTheSameDay = false;
+      isTheSameDay = true;
 
     if (message?.timestamp) {
       const localDate = new Date(message.timestamp.toDate());
@@ -24,7 +41,8 @@ const GetMessages = (props) => {
       currentHour = currentHour < 10 ? "0" + currentHour : currentHour;
       currentMinute = currentMinute < 10 ? "0" + currentMinute : currentMinute;
       time = currentHour + ":" + currentMinute;
-      fullTime = currentDay + "/" + currentMonth + "/" + currentYear;
+      fullTime =
+        currentDay + "/" + months[currentMonth].slice(0, 3) + "/" + currentYear;
       isTheSameDay = prevTime === fullTime;
       prevTime = fullTime;
     }
@@ -43,6 +61,14 @@ const GetMessages = (props) => {
           </span>
           <div dangerouslySetInnerHTML={{ __html: message.message }}></div>
         </div>
+        {message.userId === auth.currentUser.uid && (
+          <button
+            className="delete-msg"
+            onClick={() => deleteMsg(message.id, currentRoom)}
+          >
+            Delete
+          </button>
+        )}
       </div>
     );
   });

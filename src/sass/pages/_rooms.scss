@@ -178,7 +178,7 @@
       cursor: pointer;
       opacity: 0.95;
       @include on-event {
-        opacity: 1;
+        background-color: darken($color: $fuchsia-rose, $amount: 10);
       }
     }
   }
