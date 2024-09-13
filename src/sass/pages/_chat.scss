@@ -188,76 +188,75 @@
     justify-content: start;
     align-items: start;
     gap: 30px;
-    .message {
-      display: flex;
-      align-items: start;
-      p {
-        word-break: break-all;
-      }
-      h1 {
-        font-size: 27px;
-        line-height: normal;
-        margin: 0;
-      }
-      .name {
-        margin-right: 15px;
+    .message-container {
+      width: 100%;
+      .message-break {
+        display: flex;
+        justify-content: stretch;
+        align-items: center;
+        gap: 5px;
         font-family: $secondary-font-stack;
-        position: relative;
-        text-wrap: nowrap;
-        font-size: 1.17em;
-        margin-bottom: 0.5em;
+        font-size: 18px;
         font-weight: bold;
-        &.admin {
-          color: $green-cyan;
-          text-decoration: underline;
+        color: $green-cyan;
+        .line {
+          height: 1px;
+          width: 100%;
+          background-color: $green-cyan;
         }
-        @media (max-width: 567px) {
-          font-size: 20px;
+      }
+      .message {
+        display: flex;
+        align-items: start;
+        p {
+          word-break: break-all;
         }
-        &::before {
-          content: ":";
-          position: absolute;
-          right: -10px;
+        h1 {
+          font-size: 27px;
+          line-height: normal;
+          margin: 0;
         }
-        .time {
-          font-size: 18px;
-          position: absolute;
-          bottom: -15px;
-          left: 0;
+        .name {
+          margin-right: 15px;
+          font-family: $secondary-font-stack;
+          position: relative;
+          text-wrap: nowrap;
+          font-size: 1.17em;
+          margin-bottom: 0.5em;
+          font-weight: bold;
+          &.admin {
+            color: $green-cyan;
+            text-decoration: underline;
+          }
           @media (max-width: 567px) {
+            font-size: 20px;
+          }
+          &::before {
+            content: ":";
+            position: absolute;
+            right: -10px;
+          }
+          .time {
             font-size: 18px;
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            @media (max-width: 567px) {
+              font-size: 18px;
+            }
           }
         }
-      }
-      .text-msg {
-        color: $deep-purple;
-        line-height: 1.2;
-        max-width: 700px;
-        ul,
-        ol {
-          margin-left: 20px;
-        }
-        ul {
-          list-style-type: disc;
-        }
-        @include mq("xl") {
-          max-width: 500px;
-        }
-        @include mq("l") {
-          max-width: 350px;
-        }
-        @include mq("sm") {
-          max-width: 300px;
-          font-size: 16px;
-        }
-        p {
+        .text-msg {
           color: $deep-purple;
           line-height: 1.2;
-          width: 100%;
           max-width: 700px;
-          text-wrap: wrap;
-          word-wrap: break-word;
-          margin-block: 5px;
+          ul,
+          ol {
+            margin-left: 20px;
+          }
+          ul {
+            list-style-type: disc;
+          }
           @include mq("xl") {
             max-width: 500px;
           }
@@ -267,6 +266,25 @@
           @include mq("sm") {
             max-width: 300px;
             font-size: 16px;
+          }
+          p {
+            color: $deep-purple;
+            line-height: 1.2;
+            width: 100%;
+            max-width: 700px;
+            text-wrap: wrap;
+            word-wrap: break-word;
+            margin-block: 5px;
+            @include mq("xl") {
+              max-width: 500px;
+            }
+            @include mq("l") {
+              max-width: 350px;
+            }
+            @include mq("sm") {
+              max-width: 300px;
+              font-size: 16px;
+            }
           }
         }
       }
