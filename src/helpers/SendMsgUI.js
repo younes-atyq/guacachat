@@ -1,6 +1,7 @@
 import { convertToHTML } from "draft-convert";
 import SendMsg from "./SendMsg";
 import { auth } from "../firebase";
+import editMsg from "./EditMsg";
 
 const sendMsgUI = ({
   editorState,
@@ -8,9 +9,10 @@ const sendMsgUI = ({
   EditorState,
   currentRoom,
   isAdmin,
+  isSending,
+  messageId,
 }) => {
   const html = convertToHTML(editorState.getCurrentContent());
-
   const message = document.createElement("div");
   const textMsg = document.createElement("div");
 
@@ -42,7 +44,9 @@ const sendMsgUI = ({
   // reset the editor
   setEditorState(EditorState.createEmpty());
   // send the message
-  SendMsg({ message: messageContent, username, currentRoom, isAdmin });
+  isSending
+    ? SendMsg({ message: messageContent, username, currentRoom, isAdmin })
+    : editMsg({ messageId, currentRoom, newMessage: messageContent });
 };
 
 export default sendMsgUI;
