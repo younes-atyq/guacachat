@@ -205,22 +205,14 @@
           background-color: $green-cyan;
         }
       }
-      .delete-msg {
-        display: block;
-        margin-left: auto;
-        font-family: $secondary-font-stack;
-        padding: 0 5px;
-        background-color: $fuchsia-rose;
-        color: $white;
-        border: 1px solid $black;
-        cursor: pointer;
-        @include on-event {
-          background-color: darken($color: $fuchsia-rose, $amount: 10);
-        }
-      }
       .message {
         display: flex;
         align-items: start;
+        position: relative;
+        @include on-event {
+          background-color: darken($color: $silver-chalice, $amount: 10);
+          outline: none;
+        }
         p {
           word-break: break-all;
         }
@@ -228,6 +220,13 @@
           font-size: 27px;
           line-height: normal;
           margin: 0;
+        }
+        .edited {
+          position: absolute;
+          bottom: -5px;
+          right: 10px;
+          font-size: 15px;
+          color: $green-cyan;
         }
         .name {
           margin-right: 15px;
@@ -299,6 +298,64 @@
               font-size: 16px;
             }
           }
+        }
+      }
+      .option-icon {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        &.show {
+          & ~ .options {
+            display: block;
+          }
+        }
+        svg {
+          user-select: none;
+          pointer-events: none;
+        }
+        @include on-event {
+          filter: invert(1);
+          outline: none;
+        }
+      }
+      .options {
+        display: none;
+        position: absolute;
+        top: 130%;
+        right: 20px;
+        border: 1px solid $black;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-family: $secondary-font-stack;
+        border-radius: 3px;
+        z-index: 10;
+        background-color: darken($color: $green-cyan, $amount: 0);
+        color: $white;
+        // &.show {
+        //   display: block;
+        // }
+        @include on-event {
+          outline: none;
+        }
+        button {
+          padding: 3px 20px 5px 5px;
+          display: block;
+          text-align: left;
+          background-color: transparent;
+          color: $white;
+          border: none;
+          width: 100%;
+          @include on-event {
+            background-color: darken($color: $green-cyan, $amount: 5);
+            outline: none;
+          }
+        }
+        @include on-event {
+          // display: block;
         }
       }
     }

@@ -4,7 +4,7 @@ import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
-import SendMsgUI from "../helpers/SendMsgUI";
+import sendMsgUI from "../helpers/SendMsgUI";
 import { auth, db, queryCurrentRoomMessages } from "../firebase";
 import {
   collection,
@@ -20,10 +20,13 @@ import { Link, useNavigate } from "react-router-dom";
 import setUserStates from "../helpers/setUserStates";
 import Popup from "../components/Popup";
 import GetMessages from "../components/GetMessages";
+import { stateFromHTML } from "draft-js-import-html";
 
 const Chat = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [messages, setMessages] = useState([]);
+  // const [isSending, setIsSending] = useState(true);
+  const sending = useRef(true);
   const chat = useRef();
   const sidebar = useRef();
   const currentRoom = useContext(RoomContext);
@@ -31,6 +34,8 @@ const Chat = (props) => {
   const navigate = useNavigate();
   const sendMsgBtn = useRef();
   const editor = useRef();
+  const [selectedMsgId, setSelectedMsgId] = useState(null);
+  // let userState;
 
   // Persist current room in sessionStorage to maintain state through page reload
   if (currentRoom?.room) {
@@ -61,15 +66,32 @@ const Chat = (props) => {
   }, [messages, props]);
 
   // Send the message
-  const handleClick = () => {
+  const handleSend = () => {
     if (!chat?.current || !editorState.getCurrentContent().hasText()) return;
-    SendMsgUI({
+    sendMsgUI({
       editorState,
       setEditorState,
       EditorState,
       currentRoom: currentRoomName,
       isAdmin: auth.currentUser.uid === currentRoomAdminId,
+      isSending: sending.current,
     });
+  };
+
+  // Edit the message
+  const handleEdit = () => {
+    if (!chat?.current || !editorState.getCurrentContent().hasText())
+      return (sending.current = true);
+    sendMsgUI({
+      editorState,
+      setEditorState,
+      EditorState,
+      currentRoom: currentRoomName,
+      isAdmin: auth.currentUser.uid === currentRoomAdminId,
+      messageId: selectedMsgId,
+      isSending: sending.current,
+    });
+    sending.current = true;
   };
 
   // Get the messages from the database
@@ -134,6 +156,13 @@ const Chat = (props) => {
     return () => unsubscribe();
   });
 
+  // set to edit mode
+  const setToEdit = ({ messageId, oldMessage }) => {
+    sending.current = false;
+    setSelectedMsgId(messageId);
+    setEditorState(EditorState.createWithContent(stateFromHTML(oldMessage)));
+  };
+
   // // "ctrl + enter" method has an issue
   // useEffect(() => {
   //   console.log("GET IN");
@@ -153,9 +182,17 @@ const Chat = (props) => {
       <Popup />
       <Nav pageName="rooms" preventDefault={false} />
       <div ref={chat} id="messages">
-        <GetMessages messages={messages} currentRoom={currentRoomName} />
+        <GetMessages
+          messages={messages}
+          currentRoom={currentRoomName}
+          handleEdit={handleEdit}
+          setToEdit={setToEdit}
+          sending={sending}
+        />
       </div>
-
+      <button onClick={setToEdit} id="send-msg-btn">
+        CLICK ME TO EDIT
+      </button>
       <button
         onClick={(e) => {
           sidebar.current?.classList.toggle("active");
@@ -210,8 +247,11 @@ const Chat = (props) => {
         <div>
           <button
             ref={sendMsgBtn}
-            onClick={handleClick}
-            title="Ctrl + Enter"
+            // onClick={isSending ? handleSend : handleEdit}
+            onClick={sending.current ? handleSend : handleEdit}
+            // onClick={test}
+            // onClick={handleEdit}
+            // title="Ctrl + Enter"
             id="send"
           >
             SEND
