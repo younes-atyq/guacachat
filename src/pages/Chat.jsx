@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import Nav from "../components/Nav";
-import { EditorState } from "draft-js";
+import { EditorState, getDefaultKeyBinding, KeyBindingUtil } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
@@ -21,6 +21,9 @@ import setUserStates from "../helpers/setUserStates";
 import Popup from "../components/Popup";
 import GetMessages from "../components/GetMessages";
 import { stateFromHTML } from "draft-js-import-html";
+import { convertToHTML } from "draft-convert";
+
+const { hasCommandModifier } = KeyBindingUtil;
 
 const Chat = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -67,11 +70,21 @@ const Chat = (props) => {
 
   // Send the message
   const handleSend = () => {
-    if (!chat?.current || !editorState.getCurrentContent().hasText()) return;
+    const html = convertToHTML(editorState.getCurrentContent());
+    const textMsg = document.createElement("div");
+
+    textMsg.innerHTML = html;
+    if (
+      !chat?.current ||
+      !editorState.getCurrentContent().hasText() ||
+      !textMsg.textContent
+    )
+      return;
     sendMsgUI({
       editorState,
       setEditorState,
       EditorState,
+      textMsg,
       currentRoom: currentRoomName,
       isAdmin: auth.currentUser.uid === currentRoomAdminId,
       isSending: sending.current,
@@ -80,8 +93,7 @@ const Chat = (props) => {
 
   // Edit the message
   const handleEdit = () => {
-    if (!chat?.current || !editorState.getCurrentContent().hasText())
-      return (sending.current = true);
+    if (!chat?.current || !editorState.getCurrentContent().hasText()) return; // (sending.current = true);
     sendMsgUI({
       editorState,
       setEditorState,
@@ -160,22 +172,52 @@ const Chat = (props) => {
   const setToEdit = ({ messageId, oldMessage }) => {
     sending.current = false;
     setSelectedMsgId(messageId);
+    if (!oldMessage) return;
     setEditorState(EditorState.createWithContent(stateFromHTML(oldMessage)));
   };
 
+  // set to replay mode (Back to it later)
+  // const setToReplay = ({ messageId, message, username }) => {
+  //   setSelectedMsgId(messageId);
+  //   // if (!message) return;
+  //   // setEditorState(EditorState.createWithContent(stateFromHTML(message)));
+  //   const messageRefContainer = document.createElement("div");
+  //   const user = document.createElement("span");
+  //   const messageRef = document.createElement("span");
+  //   const replayIcon = document.createElement("span");
+
+  //   messageRefContainer.className = "message-ref-container";
+  //   user.className = "message-ref-user";
+  //   messageRef.className = "message-ref";
+  //   replayIcon.className = "replay-icon";
+
+  //   user.innerHTML = username;
+  //   // console.log(message);
+  //   messageRef.innerHTML =
+  //     message.length > 45 ? message.slice(0, 45) + "...<p></div>" : message;
+  //   replayIcon.innerHTML = "↩";
+  //   messageRefContainer.append(user, messageRef, replayIcon);
+  //   document.getElementById("messages").append(messageRefContainer);
+  // };
+
   // // "ctrl + enter" method has an issue
-  // useEffect(() => {
-  //   console.log("GET IN");
-  //   const unsubscribe = document.addEventListener("keydown", (e) => {
-  //     if (!chat?.current || !editorState.getCurrentContent().hasText()) return;
-  //     if (e.ctrlKey && e.key === "Enter") {
-  //       e.preventDefault();
-  //       console.log("hey");
-  //       sendMsgBtn.current.click();
-  //     }
-  //   });
-  //   return () => unsubscribe;
-  // }, [editorState]);
+  useEffect(() => {
+    const unsubscribe = document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && hasCommandModifier(e)) {
+        e.preventDefault();
+        console.log("GET IN");
+        sendMsgBtn.current.click();
+      }
+    });
+    return () => unsubscribe;
+  }, [editorState]);
+  // const handleShortcutSend = (e) => {
+  //   if (!chat?.current || !editorState.getCurrentContent().hasText()) return;
+  //   if (e.key === "Enter" && hasCommandModifier(e)) {
+  //     return "send-message";
+  //   }
+  //   return getDefaultKeyBinding(e);
+  // };
 
   return (
     <div id="chat" className="container">
@@ -185,14 +227,12 @@ const Chat = (props) => {
         <GetMessages
           messages={messages}
           currentRoom={currentRoomName}
-          handleEdit={handleEdit}
           setToEdit={setToEdit}
-          sending={sending}
+          isSending={sending.current}
+          selectedMsgId={selectedMsgId}
+          // setToReplay={setToReplay}
         />
       </div>
-      <button onClick={setToEdit} id="send-msg-btn">
-        CLICK ME TO EDIT
-      </button>
       <button
         onClick={(e) => {
           sidebar.current?.classList.toggle("active");
@@ -243,14 +283,19 @@ const Chat = (props) => {
               options: ["H1", "unordered-list-item", "ordered-list-item"],
             },
           }}
+          // make it send message when click on ctrl + enter
+          // handleKeyCommand={(command, editorState) => {
+          //   if (command === "send-message") {
+          //     sendMsgBtn.current.click();
+          //     return "handled";
+          //   }
+          //   return "not-handled";
+          // }}
         />
         <div>
           <button
             ref={sendMsgBtn}
-            // onClick={isSending ? handleSend : handleEdit}
             onClick={sending.current ? handleSend : handleEdit}
-            // onClick={test}
-            // onClick={handleEdit}
             // title="Ctrl + Enter"
             id="send"
           >

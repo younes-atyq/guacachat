@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { auth } from "../firebase.js";
 import deleteMsg from "../helpers/DeleteMsg.js";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
 
 const months = [
   "January",
@@ -18,7 +19,14 @@ const months = [
   "December",
 ];
 const GetMessages = (props) => {
-  const { messages, currentRoom, handleEdit, setToEdit } = props;
+  const {
+    messages,
+    currentRoom,
+    setToEdit,
+    isSending,
+    selectedMsgId,
+    // setToReplay,
+  } = props;
   let prevTime = null;
 
   const handleOptionsClick = (e) => {
@@ -53,11 +61,15 @@ const GetMessages = (props) => {
         messageId: message.id,
         oldMessage: message.message,
       });
-      // handleEdit({
-      //   messageId: message.id,
-      //   oldMessage: message.message,
-      // });
     };
+
+    // const handleReplay = () => {
+    //   setToReplay({
+    //     messageId: message.id,
+    //     message: message.message,
+    //     username: message.username,
+    //   });
+    // };
 
     if (message?.timestamp) {
       const localDate = new Date(message.timestamp.toDate());
@@ -90,11 +102,16 @@ const GetMessages = (props) => {
             {message.username} <span className="time">{time}</span>
           </span>
           <div dangerouslySetInnerHTML={{ __html: message.message }}></div>
+          {!isSending && selectedMsgId === message.id && (
+            <button className="cancel-editing">
+              <CancelPresentationIcon />
+            </button>
+          )}
           <button onClick={handleOptionsClick} className="option-icon">
             <MoreVertIcon />
           </button>
           <ul className="options">
-            <button>REPLY</button>
+            {/* <button onClick={handleReplay}>REPLY</button> */}
             {message.userId === auth.currentUser.uid && (
               <>
                 <button onClick={handleEditMsg}>EDIT</button>

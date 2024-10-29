@@ -188,6 +188,18 @@
     justify-content: start;
     align-items: start;
     gap: 30px;
+    position: relative;
+    // this is for the replaying of messages (not used yet)
+    // .message-ref-container {
+    //   width: 70%;
+    //   display: flex;
+    //   gap: 10px;
+    //   position: absolute;
+    //   bottom: 0;
+    //   left: 50%;
+    //   transform: translateX(-50%);
+    //   justify-content: center;
+    // }
     .message-container {
       width: 100%;
       .message-break {
@@ -318,14 +330,14 @@
           pointer-events: none;
         }
         @include on-event {
-          filter: invert(1);
+          color: white;
           outline: none;
         }
       }
       .options {
         display: none;
         position: absolute;
-        top: 130%;
+        top: 70%;
         right: 20px;
         border: 1px solid $black;
         transform: translateY(-50%);
@@ -356,6 +368,29 @@
         }
         @include on-event {
           // display: block;
+        }
+      }
+      .cancel-editing {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        &.show {
+          & ~ .options {
+            display: block;
+          }
+        }
+        svg {
+          user-select: none;
+          pointer-events: none;
+        }
+        @include on-event {
+          // filter: invert(1);
+          color: $fuchsia-rose;
+          outline: none;
         }
       }
     }
