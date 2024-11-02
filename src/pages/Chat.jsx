@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import Nav from "../components/Nav";
-import { EditorState, getDefaultKeyBinding, KeyBindingUtil } from "draft-js";
+import { EditorState, getDefaultKeyBinding } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
@@ -22,8 +22,6 @@ import Popup from "../components/Popup";
 import GetMessages from "../components/GetMessages";
 import { stateFromHTML } from "draft-js-import-html";
 import { convertToHTML } from "draft-convert";
-
-const { hasCommandModifier } = KeyBindingUtil;
 
 const Chat = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -80,8 +78,8 @@ const Chat = (props) => {
       !textMsg.textContent
     )
       return;
+    if (!sending.current) return handleEdit(textMsg);
     sendMsgUI({
-      editorState,
       setEditorState,
       EditorState,
       textMsg,
@@ -89,15 +87,17 @@ const Chat = (props) => {
       isAdmin: auth.currentUser.uid === currentRoomAdminId,
       isSending: sending.current,
     });
+    setEditorState(EditorState.createEmpty());
+    editor.current.focusEditor();
   };
 
   // Edit the message
-  const handleEdit = () => {
-    if (!chat?.current || !editorState.getCurrentContent().hasText()) return; // (sending.current = true);
+  const handleEdit = (textMsg) => {
+    // if (!chat?.current || !editorState.getCurrentContent().hasText()) return; // (sending.current = true);
     sendMsgUI({
-      editorState,
       setEditorState,
       EditorState,
+      textMsg,
       currentRoom: currentRoomName,
       isAdmin: auth.currentUser.uid === currentRoomAdminId,
       messageId: selectedMsgId,
@@ -200,24 +200,14 @@ const Chat = (props) => {
   //   document.getElementById("messages").append(messageRefContainer);
   // };
 
-  // // "ctrl + enter" method has an issue
-  useEffect(() => {
-    const unsubscribe = document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && hasCommandModifier(e)) {
-        e.preventDefault();
-        console.log("GET IN");
-        sendMsgBtn.current.click();
-      }
-    });
-    return () => unsubscribe;
-  }, [editorState]);
-  // const handleShortcutSend = (e) => {
-  //   if (!chat?.current || !editorState.getCurrentContent().hasText()) return;
-  //   if (e.key === "Enter" && hasCommandModifier(e)) {
-  //     return "send-message";
-  //   }
-  //   return getDefaultKeyBinding(e);
-  // };
+  // send messages with the enter key
+  function handleKeyCommand(command, editorState) {
+    if (command.keyCode === 13) {
+      command.preventDefault();
+      handleSend();
+      return "handled";
+    } else return getDefaultKeyBinding(command, editorState);
+  }
 
   return (
     <div id="chat" className="container">
@@ -273,7 +263,7 @@ const Chat = (props) => {
           editorClassName="editor"
           toolbarClassName="toolbar"
           toolbar={{
-            options: ["inline", "blockType", "list"],
+            options: ["inline", "blockType", "list", "emoji"],
             inline: {
               inDropdown: false,
               options: ["bold", "italic", "underline"],
@@ -283,22 +273,10 @@ const Chat = (props) => {
               options: ["H1", "unordered-list-item", "ordered-list-item"],
             },
           }}
-          // make it send message when click on ctrl + enter
-          // handleKeyCommand={(command, editorState) => {
-          //   if (command === "send-message") {
-          //     sendMsgBtn.current.click();
-          //     return "handled";
-          //   }
-          //   return "not-handled";
-          // }}
+          keyBindingFn={handleKeyCommand}
         />
         <div>
-          <button
-            ref={sendMsgBtn}
-            onClick={sending.current ? handleSend : handleEdit}
-            // title="Ctrl + Enter"
-            id="send"
-          >
+          <button ref={sendMsgBtn} onClick={handleSend} title="Send" id="send">
             SEND
           </button>
         </div>
