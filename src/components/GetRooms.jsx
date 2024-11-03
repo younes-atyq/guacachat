@@ -27,8 +27,7 @@ const GetRooms = (props) => {
     // Get the date
     const seconds = room?.timestamp?.seconds || new Date().getSeconds();
     const date = new Date(seconds * 1000);
-    // const formattedDate = date.toISOString().split("T")[0];
-    const newFormattedDate = `${date.getDay()} ${months[date.getMonth()].slice(
+    const newFormattedDate = `${date.getDate()} ${months[date.getMonth()].slice(
       0,
       3
     )} ${date.getFullYear()}`;

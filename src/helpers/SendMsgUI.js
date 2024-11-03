@@ -15,7 +15,6 @@ const sendMsgUI = ({
   const message = document.createElement("div");
 
   textMsg.className = "text-msg";
-  console.log(textMsg.textContent);
   message.append(textMsg);
   // get the username
   const username = auth.currentUser.displayName;

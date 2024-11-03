@@ -132,10 +132,12 @@
       button {
         background-color: $white;
         border: none;
-        display: block;
+        display: flex;
         cursor: pointer;
         width: 36px;
         height: 36px;
+        justify-content: center;
+        align-items: center;
         @include on-event {
           filter: invert(1);
         }

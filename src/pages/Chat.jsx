@@ -6,14 +6,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
 import sendMsgUI from "../helpers/SendMsgUI";
 import { auth, db, queryCurrentRoomMessages } from "../firebase";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { RoomContext } from "../App";
 import setUserOnline from "../helpers/setUserOnline";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,6 +15,7 @@ import Popup from "../components/Popup";
 import GetMessages from "../components/GetMessages";
 import { stateFromHTML } from "draft-js-import-html";
 import { convertToHTML } from "draft-convert";
+import deleteRoomFunc from "../helpers/DeleteRoom";
 
 const Chat = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -143,20 +137,11 @@ const Chat = (props) => {
 
   // Delete room
   const deleteRoom = async () => {
-    const roomRef = doc(db, "rooms", currentRoomName);
-    try {
-      await deleteDoc(roomRef);
-      await getDocs(collection(db, "rooms", currentRoomName, "messages")).then(
-        (snapshot) => {
-          snapshot.forEach((doc) => {
-            deleteDoc(doc.ref);
-          });
-        }
-      );
-      navigate("/rooms");
-    } catch (error) {
-      console.log(error);
-    }
+    await deleteRoomFunc({
+      currentRoomName,
+      navigate,
+    });
+    // navigate("/rooms");
   };
 
   useEffect(() => {
