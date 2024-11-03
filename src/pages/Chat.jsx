@@ -5,8 +5,8 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
 import sendMsgUI from "../helpers/SendMsgUI";
-import { auth, db, queryCurrentRoomMessages } from "../firebase";
-import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
 import { RoomContext } from "../App";
 import setUserOnline from "../helpers/setUserOnline";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,11 +17,11 @@ import { stateFromHTML } from "draft-js-import-html";
 import { convertToHTML } from "draft-convert";
 import deleteRoomFunc from "../helpers/DeleteRoom";
 import getMessagesFunc from "../helpers/GetMessages";
+import manageUserSatesFunc from "../helpers/ManageUserStatesFunc";
 
 const Chat = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [messages, setMessages] = useState([]);
-  // const [isSending, setIsSending] = useState(true);
   const sending = useRef(true);
   const chat = useRef();
   const sidebar = useRef();
@@ -31,7 +31,6 @@ const Chat = (props) => {
   const sendMsgBtn = useRef();
   const editor = useRef();
   const [selectedMsgId, setSelectedMsgId] = useState(null);
-  // let userState;
 
   // Persist current room in sessionStorage to maintain state through page reload
   if (currentRoom?.room) {
@@ -109,17 +108,9 @@ const Chat = (props) => {
 
   // Mange user states
   useEffect(() => {
-    const roomRef = collection(db, "rooms", currentRoomName, "onlineUsers");
-    const unsubscribe = onSnapshot(roomRef, (users) => {
-      const onlineUsers = [];
-      users.forEach((user) => {
-        if (user.data().state === "offline") return;
-        onlineUsers.push({
-          username: user.data().username,
-          userId: user.data().userId,
-        });
-      });
-      setOnlineUsers(onlineUsers);
+    const unsubscribe = manageUserSatesFunc({
+      currentRoomName,
+      setOnlineUsers,
     });
     return () => unsubscribe();
   }, [currentRoomName]);

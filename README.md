@@ -45,7 +45,7 @@ This project is a real-time chat application built using [React](https://react.d
 
 ## Future Improvements
 
-- User presence indicators(online/offline).
+- Improve user presence indicators(online/offline).
 - Add file sharing capabilities.
 - Implement private messaging.
 - Improve the user interface and user experience.
