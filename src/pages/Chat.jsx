@@ -16,6 +16,7 @@ import GetMessages from "../components/GetMessages";
 import { stateFromHTML } from "draft-js-import-html";
 import { convertToHTML } from "draft-convert";
 import deleteRoomFunc from "../helpers/DeleteRoom";
+import getMessagesFunc from "../helpers/GetMessages";
 
 const Chat = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -87,7 +88,6 @@ const Chat = (props) => {
 
   // Edit the message
   const handleEdit = (textMsg) => {
-    // if (!chat?.current || !editorState.getCurrentContent().hasText()) return; // (sending.current = true);
     sendMsgUI({
       setEditorState,
       EditorState,
@@ -103,19 +103,8 @@ const Chat = (props) => {
   // Get the messages from the database
   useEffect(() => {
     // The only way I found to get the current room because the URL path is not related to the chat
-    let room = currentRoomName;
-    const unsubscribe = onSnapshot(
-      queryCurrentRoomMessages(room),
-      (snapshot) => {
-        let messages = [];
-        if (!snapshot) return;
-        snapshot.forEach((doc) => {
-          messages.push({ ...doc.data(), id: doc.id });
-        });
-        setMessages(messages);
-      }
-    );
-    return () => unsubscribe();
+    const unsubscribe = getMessagesFunc({ currentRoomName, setMessages });
+    return () => unsubscribe;
   }, [currentRoomName]);
 
   // Mange user states
@@ -141,7 +130,6 @@ const Chat = (props) => {
       currentRoomName,
       navigate,
     });
-    // navigate("/rooms");
   };
 
   useEffect(() => {

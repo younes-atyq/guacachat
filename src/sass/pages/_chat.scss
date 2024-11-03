@@ -453,10 +453,11 @@
         margin-top: 10px;
         margin-left: 50px;
         list-style-type: square;
-        // change list style color
-
         li {
           font-family: $body-font-stack;
+          &::marker {
+            color: green;
+          }
         }
       }
     }
