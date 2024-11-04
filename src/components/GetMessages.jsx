@@ -25,11 +25,16 @@ const GetMessages = (props) => {
     setToEdit,
     isSending,
     selectedMsgId,
+    cancelEdit,
     // setToReplay,
   } = props;
   let prevTime = null;
 
   const handleOptionsClick = (e) => {
+    document.querySelectorAll(".option-icon").forEach((el) => {
+      console.log("EHLLo");
+      el.classList.remove("show");
+    });
     e.target.classList.toggle("show");
   };
 
@@ -103,7 +108,7 @@ const GetMessages = (props) => {
           </span>
           <div dangerouslySetInnerHTML={{ __html: message.message }}></div>
           {!isSending && selectedMsgId === message.id && (
-            <button className="cancel-editing">
+            <button onClick={cancelEdit} className="cancel-editing">
               <CancelPresentationIcon />
             </button>
           )}

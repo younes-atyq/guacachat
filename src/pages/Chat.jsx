@@ -134,10 +134,18 @@ const Chat = (props) => {
 
   // set to edit mode
   const setToEdit = ({ messageId, oldMessage }) => {
+    if (!messageId) return (sending.current = true);
     sending.current = false;
     setSelectedMsgId(messageId);
     if (!oldMessage) return;
     setEditorState(EditorState.createWithContent(stateFromHTML(oldMessage)));
+  };
+
+  // Cancel edit mode
+  const cancelEdit = () => {
+    setSelectedMsgId(null);
+    setEditorState(EditorState.createEmpty());
+    sending.current = true;
   };
 
   // set to replay mode (Back to it later)
@@ -170,6 +178,8 @@ const Chat = (props) => {
       command.preventDefault();
       handleSend();
       return "handled";
+    } else if (command.keyCode === 27) {
+      cancelEdit();
     } else return getDefaultKeyBinding(command, editorState);
   }
 
@@ -184,6 +194,7 @@ const Chat = (props) => {
           setToEdit={setToEdit}
           isSending={sending.current}
           selectedMsgId={selectedMsgId}
+          cancelEdit={cancelEdit}
           // setToReplay={setToReplay}
         />
       </div>

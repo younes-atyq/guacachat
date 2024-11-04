@@ -8,7 +8,6 @@ const getMessagesFunc = async ({ currentRoomName, setMessages }) => {
     snapshot.forEach((doc) => {
       messages.push({ ...doc.data(), id: doc.id });
     });
-    console.log("Hey");
     setMessages(messages);
   });
 };

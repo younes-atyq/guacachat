@@ -337,7 +337,7 @@
       .options {
         display: none;
         position: absolute;
-        top: 70%;
+        top: 50%;
         right: 20px;
         border: 1px solid $black;
         transform: translateY(-50%);
@@ -455,6 +455,7 @@
         list-style-type: square;
         li {
           font-family: $body-font-stack;
+          font-weight: 600;
           &::marker {
             color: green;
           }
