@@ -3,7 +3,6 @@ import { auth } from "../firebase";
 import editMsg from "./EditMsg";
 
 const sendMsgUI = ({
-  editorState,
   setEditorState,
   EditorState,
   textMsg,

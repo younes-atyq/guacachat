@@ -32,7 +32,6 @@ const GetMessages = (props) => {
 
   const handleOptionsClick = (e) => {
     document.querySelectorAll(".option-icon").forEach((el) => {
-      console.log("EHLLo");
       el.classList.remove("show");
     });
     e.target.classList.toggle("show");
