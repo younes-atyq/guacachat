@@ -18,6 +18,7 @@ import { convertToHTML } from "draft-convert";
 import deleteRoomFunc from "../helpers/DeleteRoom";
 import getMessagesFunc from "../helpers/GetMessages";
 import manageUserSatesFunc from "../helpers/ManageUserStatesFunc";
+import setUserOffline from "../helpers/setUserOffline";
 
 const Chat = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -47,13 +48,27 @@ const Chat = (props) => {
 
   // Set the current user online state
   useAuthRedirect();
-  setUserStates({
-    currentRoom: currentRoomName,
-  });
+  useEffect(() => {
+    setUserStates({
+      currentRoom: currentRoomName,
+    });
+    setUserOnline({
+      currentRoom: currentRoomName,
+    });
+  }, [currentRoomName]);
 
-  setUserOnline({
-    currentRoom: currentRoomName,
-  });
+  // Set the user state offline when the page is unmounted
+  useEffect(() => {
+    return document.addEventListener("visibilitychange", (e) => {
+      if (document.visibilityState === "hidden") {
+        setUserOffline();
+      } else {
+        setUserOnline({
+          currentRoom: currentRoomName,
+        });
+      }
+    });
+  }, [currentRoomName]);
 
   // scroll the chat to the bottom
   useEffect(() => {
