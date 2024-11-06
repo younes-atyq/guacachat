@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import DOMPurify from "dompurify";
 
 //  Set the pop-up window content
 export const setPopup = ({
@@ -15,7 +16,7 @@ export const setPopup = ({
   }
   document.querySelector(".pop-up-wrapper").style.display = "block";
   document.querySelector(".pop-up-header").textContent = heading;
-  document.querySelector(".pop-up-text").innerHTML = text;
+  document.querySelector(".pop-up-text").innerHTML = DOMPurify.sanitize(text);
 
   if (options) {
     document.querySelector(".pop-up-wrapper .option").style.display = "flex";
