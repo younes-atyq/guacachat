@@ -39,11 +39,8 @@ const Chat = (props) => {
     sessionStorage.setItem("roomAdmin", currentRoom.room[1]);
     sessionStorage.setItem("roomAdminId", currentRoom.room[2]);
   }
-
   const currentRoomName = sessionStorage.getItem("currentRoom");
-
   const currentRoomAdmin = sessionStorage.getItem("roomAdmin");
-
   const currentRoomAdminId = sessionStorage.getItem("roomAdminId");
 
   // Set the current user online state
@@ -57,7 +54,7 @@ const Chat = (props) => {
     });
   }, [currentRoomName]);
 
-  // Set the user state offline when the page is unmounted
+  // Set the user state offline when the page loses focus
   useEffect(() => {
     return document.addEventListener("visibilitychange", (e) => {
       if (document.visibilityState === "hidden") {
@@ -114,39 +111,6 @@ const Chat = (props) => {
     sending.current = true;
   };
 
-  // Get the messages from the database
-  useEffect(() => {
-    // The only way I found to get the current room because the URL path is not related to the chat
-    const unsubscribe = getMessagesFunc({ currentRoomName, setMessages });
-    return () => unsubscribe;
-  }, [currentRoomName]);
-
-  // Mange user states
-  useEffect(() => {
-    const unsubscribe = manageUserSatesFunc({
-      currentRoomName,
-      setOnlineUsers,
-    });
-    return () => unsubscribe();
-  }, [currentRoomName]);
-
-  // Delete room
-  const deleteRoom = async () => {
-    await deleteRoomFunc({
-      currentRoomName,
-      navigate,
-    });
-  };
-
-  useEffect(() => {
-    const unsubscribe = async () => {
-      const roomRef = doc(db, "rooms", currentRoomName);
-      const room = await getDoc(roomRef);
-      if (!room.exists()) navigate("/rooms");
-    };
-    return () => unsubscribe();
-  });
-
   // set to edit mode
   const setToEdit = ({ messageId, oldMessage }) => {
     if (!messageId) return (sending.current = true);
@@ -162,6 +126,55 @@ const Chat = (props) => {
     setEditorState(EditorState.createEmpty());
     sending.current = true;
   };
+
+  // Get the messages from the database
+  useEffect(() => {
+    // The only way I found to get the current room because the URL path is not related to the chat
+    if (!currentRoomName) return navigate("/rooms");
+    const unsubscribe = getMessagesFunc({ currentRoomName, setMessages });
+    return () => unsubscribe;
+  }, [currentRoomName, navigate]);
+
+  // Mange user states
+  useEffect(() => {
+    if (!currentRoomName) return navigate("/rooms");
+    const unsubscribe = manageUserSatesFunc({
+      currentRoomName,
+      setOnlineUsers,
+    });
+    return () => unsubscribe();
+  }, [currentRoomName, navigate]);
+
+  // Delete room
+  const deleteRoom = async () => {
+    await deleteRoomFunc({
+      currentRoomName,
+      navigate,
+    });
+  };
+
+  useEffect(() => {
+    const unsubscribe = async () => {
+      if (!currentRoomName) return navigate("/rooms");
+      const roomRef = doc(db, "rooms", currentRoomName);
+      const room = await getDoc(roomRef);
+      if (!room.exists()) navigate("/rooms");
+    };
+    return () => unsubscribe();
+  });
+
+  // send messages with the enter key
+  function handleKeyCommand(command, editorState) {
+    if (command.keyCode === 13) {
+      command.preventDefault();
+      handleSend();
+      return "handled";
+    } else if (command.keyCode === 27) {
+      cancelEdit();
+    } else return getDefaultKeyBinding(command, editorState);
+  }
+
+  // Set notifications
 
   // set to replay mode (Back to it later)
   // const setToReplay = ({ messageId, message, username }) => {
@@ -186,17 +199,6 @@ const Chat = (props) => {
   //   messageRefContainer.append(user, messageRef, replayIcon);
   //   document.getElementById("messages").append(messageRefContainer);
   // };
-
-  // send messages with the enter key
-  function handleKeyCommand(command, editorState) {
-    if (command.keyCode === 13) {
-      command.preventDefault();
-      handleSend();
-      return "handled";
-    } else if (command.keyCode === 27) {
-      cancelEdit();
-    } else return getDefaultKeyBinding(command, editorState);
-  }
 
   return (
     <div id="chat" className="container">
