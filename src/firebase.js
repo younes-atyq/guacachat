@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { collection, getFirestore, orderBy, query } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 
 // setup firebase
 const firebaseConfig = {
@@ -12,7 +13,9 @@ const firebaseConfig = {
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
 };
+
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 
@@ -25,8 +28,11 @@ export const auth = getAuth();
 // Initialize Storage
 export const storage = getStorage();
 
-// Initialize firestore
+// Initialize Firestore
 export const db = getFirestore();
+
+// Initialize Realtime Database
+export const rtdb = getDatabase(app);
 
 // rooms collection
 export const colRooms = collection(db, "rooms");

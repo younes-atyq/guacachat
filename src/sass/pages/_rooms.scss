@@ -5,7 +5,7 @@
   display: grid;
   grid-template-columns: 1fr 251px;
   grid-template-rows: 55px 1fr;
-  justify-content: end;
+  justify-content: flex-end;
   gap: 10px;
   @media (max-width: 992px) {
     grid-template-columns: 1fr 190px;
@@ -160,7 +160,7 @@
     }
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     #username {
       font-family: $secondary-font-stack;

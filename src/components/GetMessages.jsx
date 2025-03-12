@@ -111,9 +111,12 @@ const GetMessages = (props) => {
               <CancelPresentationIcon />
             </button>
           )}
-          <button onClick={handleOptionsClick} className="option-icon">
-            <MoreVertIcon />
-          </button>
+          {/* This condition will be removed when the reply function is added */}
+          {message.userId === auth.currentUser.uid && (
+            <button onClick={handleOptionsClick} className="option-icon">
+              <MoreVertIcon />
+            </button>
+          )}
           <ul className="options">
             {/* <button onClick={handleReplay}>REPLY</button> */}
             {message.userId === auth.currentUser.uid && (

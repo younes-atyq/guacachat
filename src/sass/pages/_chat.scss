@@ -5,7 +5,7 @@
   display: grid;
   grid-template-columns: 1fr 251px;
   grid-template-rows: 1fr 175px;
-  justify-content: end;
+  justify-content: flex-end;
   gap: 10px;
   @media (max-width: 992px) {
     grid-template-columns: 1fr 190px;
@@ -61,8 +61,8 @@
     height: 100%;
   }
   #input-field {
-    align-items: end;
     display: flex;
+    align-items: flex-end;
     grid-area: 2/1/2/2;
     padding-bottom: 20px;
     @include mq("sm") {
@@ -185,8 +185,8 @@
     grid-area: 1 / 1 / 2 / 2;
     display: flex;
     flex-direction: column;
-    justify-content: start;
-    align-items: start;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: 30px;
     position: relative;
     // this is for the replaying of messages (not used yet)
@@ -219,7 +219,7 @@
       }
       .message {
         display: flex;
-        align-items: start;
+        align-items: flex-start;
         position: relative;
         @include on-event {
           background-color: darken($color: $silver-chalice, $amount: 10);
@@ -411,7 +411,7 @@
     }
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     * {
       font-family: $secondary-font-stack;
