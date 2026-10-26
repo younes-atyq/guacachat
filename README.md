@@ -15,6 +15,12 @@ This project is a real-time chat application built using [React](https://react.d
 - User presence indicators
 - Message editing and deletion
 
+## GIF Picker
+
+The chat has a GIF key that searches GIPHY. Tenor's API was shut down by Google in 2026, so the provider lives in `src/helpers/gifSearch.js`; swap that one file to use another service.
+
+Create a key at https://developers.giphy.com/ and set `REACT_APP_GIPHY_API_KEY` (in `.env` locally, and in the Vercel project settings, then redeploy). Without a key the GIF picker shows an "offline" message.
+
 ## Technologies Used
 
 - React
