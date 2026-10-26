@@ -1,4 +1,3 @@
-import { logEvent } from "firebase/analytics";
 import { auth, db } from "../firebase.js";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";

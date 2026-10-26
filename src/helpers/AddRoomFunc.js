@@ -9,7 +9,6 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { setPopup } from "../components/Popup";
-import { logEvent } from "firebase/analytics";
 
 // Add a new room to the database, and throw an error if the room already exists.
 const addRoomFunc = async ({ roomName }) => {
