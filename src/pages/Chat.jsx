@@ -3,6 +3,7 @@ import Nav from "../components/Nav";
 import useAuthRedirect from "../hooks/useAuthRedirect";
 import sendMsgUI from "../helpers/SendMsgUI";
 import sendMsg from "../helpers/SendMsg";
+import { reportGifShared } from "../helpers/gifSearch";
 import { textToMessageHtml, messageHtmlToText } from "../helpers/messageText";
 import MessageComposer from "../components/MessageComposer";
 import { auth, db } from "../firebase";
@@ -88,9 +89,10 @@ const Chat = (props) => {
   };
 
   // Send a GIF picked from the GIF picker
-  const handleSendGif = ({ url, title, width, height }) => {
+  const handleSendGif = ({ url, slug, title, width, height }, query) => {
+    reportGifShared({ slug, query });
     sendMsg({
-      gif: { url, title, width, height },
+      gif: { url, slug, title, width, height },
       username: auth.currentUser.displayName,
       currentRoom: currentRoomName,
       isAdmin,

@@ -17,9 +17,9 @@ This project is a real-time chat application built using [React](https://react.d
 
 ## GIF Picker
 
-The chat has a GIF key that searches GIPHY. Tenor's API was shut down by Google in 2026, so the provider lives in `src/helpers/gifSearch.js`; swap that one file to use another service.
+The chat has a GIF key that searches [KLIPY](https://docs.klipy.com). Tenor's API was shut down by Google in 2026, and KLIPY is the Tenor-style replacement; the provider lives in `src/helpers/gifSearch.js`, so swapping services only touches that file.
 
-Create a key at https://developers.giphy.com/ and set `REACT_APP_GIPHY_API_KEY` (in `.env` locally, and in the Vercel project settings, then redeploy). Without a key the GIF picker shows an "offline" message.
+Create an app key in the KLIPY Partner Panel (https://partner.klipy.com/, API Keys) and set `REACT_APP_KLIPY_API_KEY` (in `.env` locally, and in the Vercel project settings, then redeploy). A key in Testing mode is limited to 100 requests per hour; request Production access in the Partner Panel when you go live. Without a key the GIF picker shows an "offline" message.
 
 ## Technologies Used
 

@@ -33,9 +33,9 @@ const MessageComposer = ({
     }
   };
 
-  const handlePick = (gif) => {
+  const handlePick = (gif, query) => {
     setGifOpen(false);
-    onPickGif(gif);
+    onPickGif(gif, query);
     textareaRef.current?.focus();
   };
 

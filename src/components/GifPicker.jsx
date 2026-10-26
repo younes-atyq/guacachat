@@ -5,17 +5,21 @@ const GifPicker = ({ onPick, onClose }) => {
   const [query, setQuery] = useState("");
   const [gifs, setGifs] = useState([]);
   const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(1);
   const [status, setStatus] = useState(gifSearchEnabled ? "loading" : "off");
   const root = useRef();
 
   const load = useCallback(
-    async (offset, signal) => {
+    async (nextPage, signal) => {
       setStatus("loading");
       try {
-        const result = await fetchGifs({ query, offset, signal });
-        setGifs((prev) => (offset ? [...prev, ...result.gifs] : result.gifs));
+        const result = await fetchGifs({ query, page: nextPage, signal });
+        setGifs((prev) =>
+          nextPage > 1 ? [...prev, ...result.gifs] : result.gifs
+        );
+        setPage(nextPage);
         setHasMore(result.hasMore);
-        setStatus(result.gifs.length || offset ? "ready" : "empty");
+        setStatus(result.gifs.length || nextPage > 1 ? "ready" : "empty");
       } catch (error) {
         if (error.name !== "AbortError") setStatus("error");
       }
@@ -28,7 +32,7 @@ const GifPicker = ({ onPick, onClose }) => {
     if (!gifSearchEnabled) return;
     const controller = new AbortController();
     const timer = setTimeout(
-      () => load(0, controller.signal),
+      () => load(1, controller.signal),
       query ? 350 : 0
     );
     return () => {
@@ -74,7 +78,7 @@ const GifPicker = ({ onPick, onClose }) => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="type anything..."
+          placeholder="Search KLIPY"
           spellCheck="false"
           autoComplete="off"
         />
@@ -84,7 +88,7 @@ const GifPicker = ({ onPick, onClose }) => {
           <p className="gif-note">
             GIF search is offline.
             <br />
-            Add REACT_APP_GIPHY_API_KEY and rebuild.
+            Add REACT_APP_KLIPY_API_KEY and rebuild.
           </p>
         )}
         {status === "error" && (
@@ -98,7 +102,7 @@ const GifPicker = ({ onPick, onClose }) => {
               key={`${gif.id}-${i}`}
               className="gif-item"
               title={gif.title}
-              onClick={() => onPick(gif)}
+              onClick={() => onPick(gif, query)}
             >
               <img
                 src={gif.preview}
@@ -115,13 +119,13 @@ const GifPicker = ({ onPick, onClose }) => {
           <button
             type="button"
             className="gif-more"
-            onClick={() => load(gifs.length)}
+            onClick={() => load(page + 1)}
           >
             [ LOAD MORE ]
           </button>
         )}
       </div>
-      <div className="gif-credit">POWERED BY GIPHY</div>
+      <div className="gif-credit">POWERED BY KLIPY</div>
     </div>
   );
 };

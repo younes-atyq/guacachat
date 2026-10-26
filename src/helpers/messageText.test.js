@@ -1,5 +1,5 @@
 import { textToMessageHtml, messageHtmlToText } from "./messageText";
-import { isTrustedGifUrl } from "./gifSearch";
+import { isTrustedGifUrl, normalizeGif } from "./gifSearch";
 
 describe("textToMessageHtml", () => {
   it("wraps text in the message markup and keeps line breaks", () => {
@@ -29,15 +29,50 @@ describe("messageHtmlToText", () => {
 });
 
 describe("isTrustedGifUrl", () => {
-  it("accepts https GIPHY media hosts only", () => {
-    expect(isTrustedGifUrl("https://media2.giphy.com/media/x/giphy.gif")).toBe(
-      true
-    );
-    expect(isTrustedGifUrl("https://i.giphy.com/x.gif")).toBe(true);
-    expect(isTrustedGifUrl("http://media.giphy.com/x.gif")).toBe(false);
-    expect(isTrustedGifUrl("https://evilgiphy.com/x.gif")).toBe(false);
-    expect(isTrustedGifUrl("https://giphy.com.evil.io/x.gif")).toBe(false);
+  it("accepts https KLIPY media hosts only", () => {
+    expect(isTrustedGifUrl("https://static.klipy.com/ii/a/b/c.webp")).toBe(true);
+    expect(isTrustedGifUrl("https://static2.klipy.com/x.gif")).toBe(true);
+    expect(isTrustedGifUrl("http://static.klipy.com/x.gif")).toBe(false);
+    expect(isTrustedGifUrl("https://evilklipy.com/x.gif")).toBe(false);
+    expect(isTrustedGifUrl("https://klipy.com.evil.io/x.gif")).toBe(false);
+    expect(isTrustedGifUrl("https://media.giphy.com/x.gif")).toBe(false);
     expect(isTrustedGifUrl("javascript:alert(1)")).toBe(false);
     expect(isTrustedGifUrl("not a url")).toBe(false);
+  });
+});
+
+describe("normalizeGif", () => {
+  const media = (url, size) => ({ url, width: size, height: size });
+  const gif = {
+    id: 8041071659142944,
+    slug: "hello-hi-662",
+    title: "Hello",
+    file: {
+      md: { gif: media("https://static.klipy.com/md.gif", 498), webp: media("https://static.klipy.com/md.webp", 498) },
+      sm: { gif: media("https://static.klipy.com/sm.gif", 220), webp: media("https://static.klipy.com/sm.webp", 220) },
+    },
+  };
+
+  it("picks a light webp preview and a bigger webp for the message", () => {
+    expect(normalizeGif(gif)).toEqual({
+      id: "8041071659142944",
+      slug: "hello-hi-662",
+      title: "Hello",
+      url: "https://static.klipy.com/md.webp",
+      preview: "https://static.klipy.com/sm.webp",
+      width: 498,
+      height: 498,
+      previewWidth: 220,
+      previewHeight: 220,
+    });
+  });
+
+  it("falls back to gif when there is no webp, and skips empty items", () => {
+    const onlyGif = {
+      ...gif,
+      file: { sm: { gif: media("https://static.klipy.com/sm.gif", 220) } },
+    };
+    expect(normalizeGif(onlyGif).url).toBe("https://static.klipy.com/sm.gif");
+    expect(normalizeGif({ ...gif, file: {} })).toBeNull();
   });
 });
