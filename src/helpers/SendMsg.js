@@ -1,11 +1,13 @@
 import { serverTimestamp, addDoc, collection } from "firebase/firestore";
 import { db, auth } from "../firebase";
 
-const sendMsg = ({ message, username, currentRoom, isAdmin }) => {
-  if (message) {
+// A message is either HTML text or a GIF ({ url, title, width, height }).
+const sendMsg = ({ message, gif, username, currentRoom, isAdmin }) => {
+  if (message || gif) {
     const colRef = collection(db, "rooms", currentRoom, "messages");
     addDoc(colRef, {
-      message,
+      message: message || "",
+      ...(gif && { gif }),
       username,
       timestamp: serverTimestamp(),
       isAdmin: isAdmin ? true : false,

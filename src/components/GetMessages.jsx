@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { auth } from "../firebase.js";
 import deleteMsg from "../helpers/DeleteMsg.js";
+import { isTrustedGifUrl } from "../helpers/gifSearch.js";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
 
@@ -105,7 +106,20 @@ const GetMessages = (props) => {
           <span className={message?.isAdmin ? "name admin" : "name"}>
             {message.username} <span className="time">{time}</span>
           </span>
-          <div dangerouslySetInnerHTML={{ __html: message.message }}></div>
+          {message.gif && isTrustedGifUrl(message.gif.url) && (
+            <div className="gif-msg">
+              <img
+                src={message.gif.url}
+                alt={message.gif.title || "GIF"}
+                width={message.gif.width}
+                height={message.gif.height}
+                loading="lazy"
+              />
+            </div>
+          )}
+          {message.message && (
+            <div dangerouslySetInnerHTML={{ __html: message.message }}></div>
+          )}
           {!isSending && selectedMsgId === message.id && (
             <button onClick={cancelEdit} className="cancel-editing">
               <CancelPresentationIcon />
@@ -121,7 +135,7 @@ const GetMessages = (props) => {
             {/* <button onClick={handleReplay}>REPLY</button> */}
             {message.userId === auth.currentUser.uid && (
               <>
-                <button onClick={handleEditMsg}>EDIT</button>
+                {!message.gif && <button onClick={handleEditMsg}>EDIT</button>}
                 <button onClick={handleDeleteMsg}>DELETE</button>
               </>
             )}

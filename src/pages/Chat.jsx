@@ -1,10 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import Nav from "../components/Nav";
-import { EditorState, getDefaultKeyBinding } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import useAuthRedirect from "../hooks/useAuthRedirect";
 import sendMsgUI from "../helpers/SendMsgUI";
+import sendMsg from "../helpers/SendMsg";
+import { reportGifShared } from "../helpers/gifSearch";
+import { textToMessageHtml, messageHtmlToText } from "../helpers/messageText";
+import MessageComposer from "../components/MessageComposer";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { RoomContext } from "../App";
@@ -13,15 +14,13 @@ import { Link, useNavigate } from "react-router-dom";
 import setUserStates from "../helpers/setUserStates";
 import Popup from "../components/Popup";
 import GetMessages from "../components/GetMessages";
-import { stateFromHTML } from "draft-js-import-html";
-import { convertToHTML } from "draft-convert";
 import deleteRoomFunc from "../helpers/DeleteRoom";
 import getMessagesFunc from "../helpers/GetMessages";
 import manageUserSatesFunc from "../helpers/ManageUserStatesFunc";
 import setUserOffline from "../helpers/setUserOffline";
 
 const Chat = (props) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
   const sending = useRef(true);
   const chat = useRef();
@@ -29,8 +28,7 @@ const Chat = (props) => {
   const currentRoom = useContext(RoomContext);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const navigate = useNavigate();
-  const sendMsgBtn = useRef();
-  const editor = useRef();
+  const textareaRef = useRef();
   const [selectedMsgId, setSelectedMsgId] = useState(null);
 
   // Persist current room in sessionStorage to maintain state through page reload
@@ -72,43 +70,33 @@ const Chat = (props) => {
     chat.current?.scrollTo(0, chat.current?.scrollHeight);
   }, [messages, props]);
 
-  // Send the message
+  const isAdmin = auth?.currentUser?.uid === currentRoomAdminId;
+
+  // Send (or save the edit of) the message
   const handleSend = () => {
-    const html = convertToHTML(editorState.getCurrentContent());
-    const textMsg = document.createElement("div");
-
-    textMsg.innerHTML = html;
-    if (
-      !chat?.current ||
-      !editorState.getCurrentContent().hasText() ||
-      !textMsg.textContent
-    )
-      return;
-    if (!sending.current) return handleEdit(textMsg);
+    const body = text.trim();
+    if (!chat?.current || !body) return;
     sendMsgUI({
-      setEditorState,
-      EditorState,
-      textMsg,
+      messageContent: textToMessageHtml(body),
       currentRoom: currentRoomName,
-      isAdmin: auth.currentUser.uid === currentRoomAdminId,
-      isSending: sending.current,
-    });
-    setEditorState(EditorState.createEmpty());
-    editor.current.focusEditor();
-  };
-
-  // Edit the message
-  const handleEdit = (textMsg) => {
-    sendMsgUI({
-      setEditorState,
-      EditorState,
-      textMsg,
-      currentRoom: currentRoomName,
-      isAdmin: auth.currentUser.uid === currentRoomAdminId,
+      isAdmin,
       messageId: selectedMsgId,
       isSending: sending.current,
     });
     sending.current = true;
+    setText("");
+    textareaRef.current?.focus();
+  };
+
+  // Send a GIF picked from the GIF picker
+  const handleSendGif = ({ url, slug, title, width, height }, query) => {
+    reportGifShared({ slug, query });
+    sendMsg({
+      gif: { url, slug, title, width, height },
+      username: auth.currentUser.displayName,
+      currentRoom: currentRoomName,
+      isAdmin,
+    });
   };
 
   // set to edit mode
@@ -117,13 +105,14 @@ const Chat = (props) => {
     sending.current = false;
     setSelectedMsgId(messageId);
     if (!oldMessage) return;
-    setEditorState(EditorState.createWithContent(stateFromHTML(oldMessage)));
+    setText(messageHtmlToText(oldMessage));
+    textareaRef.current?.focus();
   };
 
   // Cancel edit mode
   const cancelEdit = () => {
     setSelectedMsgId(null);
-    setEditorState(EditorState.createEmpty());
+    setText("");
     sending.current = true;
   };
 
@@ -162,17 +151,6 @@ const Chat = (props) => {
     };
     return () => unsubscribe();
   });
-
-  // send messages with the enter key
-  function handleKeyCommand(command, editorState) {
-    if (command.keyCode === 13) {
-      command.preventDefault();
-      handleSend();
-      return "handled";
-    } else if (command.keyCode === 27) {
-      cancelEdit();
-    } else return getDefaultKeyBinding(command, editorState);
-  }
 
   // Set notifications
 
@@ -246,33 +224,16 @@ const Chat = (props) => {
         </Link>
       </aside>
 
-      <div id="input-field">
-        <Editor
-          ref={editor}
-          editorState={editorState}
-          onEditorStateChange={setEditorState}
-          wrapperClassName="editor-wrapper"
-          editorClassName="editor"
-          toolbarClassName="toolbar"
-          toolbar={{
-            options: ["inline", "blockType", "list", "emoji"],
-            inline: {
-              inDropdown: false,
-              options: ["bold", "italic", "underline"],
-            },
-            blockType: {
-              inDropdown: true,
-              options: ["H1", "unordered-list-item", "ordered-list-item"],
-            },
-          }}
-          keyBindingFn={handleKeyCommand}
-        />
-        <div>
-          <button ref={sendMsgBtn} onClick={handleSend} title="Send" id="send">
-            SEND
-          </button>
-        </div>
-      </div>
+      <MessageComposer
+        value={text}
+        onChange={setText}
+        onSend={handleSend}
+        onCancel={cancelEdit}
+        onPickGif={handleSendGif}
+        editing={!sending.current}
+        username={auth?.currentUser?.displayName}
+        textareaRef={textareaRef}
+      />
     </div>
   );
 };
